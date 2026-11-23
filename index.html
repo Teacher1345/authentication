@@ -1,0 +1,81 @@
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+  import {
+    getFirestore,
+    doc,
+    getDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAGVp-o03KV1N3jUsdwP3NyVCOPGAjOKBE",
+    authDomain: "authentication-2b419.firebaseapp.com",
+    projectId: "authentication-2b419",
+    storageBucket: "authentication-2b419.firebasestorage.app",
+    messagingSenderId: "396266980346",
+    appId: "1:396266980346:web:db002b2fa6e3c076589a43"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Make function available to button onclick
+  window.verifyEnrollmentKey = async function () {
+
+    const keyInput = document
+      .getElementById("enrollmentKey")
+      .value
+      .trim();
+
+    const message = document.getElementById("message");
+
+    if (!keyInput) {
+      message.textContent = "Please enter your enrollment key.";
+      message.style.color = "red";
+      return;
+    }
+
+    try {
+
+      const keyRef = doc(db, "enrollmentKeys", keyInput);
+      const keyDoc = await getDoc(keyRef);
+
+      if (!keyDoc.exists()) {
+        message.textContent = "Invalid enrollment key.";
+        message.style.color = "red";
+        return;
+      }
+
+      const data = keyDoc.data();
+
+      if (data.active === false) {
+        message.textContent = "This enrollment key has been disabled.";
+        message.style.color = "red";
+        return;
+      }
+
+      // Save key data for next page
+      sessionStorage.setItem("enrollmentKey", keyInput);
+
+      if (data.course) {
+        sessionStorage.setItem(
+          "courseName",
+          data.course
+        );
+      }
+
+      message.textContent = "Access granted. Redirecting...";
+      message.style.color = "green";
+
+      setTimeout(() => {
+        window.location.href = "register.html";
+      }, 1000);
+
+    } catch (error) {
+      console.error(error);
+      message.textContent =
+        "Unable to verify key. Please try again.";
+      message.style.color = "red";
+    }
+  };
+</script>
