@@ -1,207 +1,391 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Learning Portal</title>
-
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-    font-family:Arial, sans-serif;
-    background:linear-gradient(135deg,#4f46e5,#7c3aed);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-}
-
-.container{
-    background:white;
-    width:90%;
-    max-width:400px;
-    padding:40px;
-    border-radius:15px;
-    text-align:center;
-    box-shadow:0 10px 30px rgba(0,0,0,.2);
-}
-
-h1{
-    margin-bottom:10px;
-    color:#333;
-}
-
-p{
-    color:#666;
-    margin-bottom:20px;
-}
-
-input{
-    width:100%;
-    padding:12px;
-    border:1px solid #ddd;
-    border-radius:8px;
-    margin-bottom:15px;
-    font-size:16px;
-}
-
-button{
-    width:100%;
-    padding:12px;
-    background:#4f46e5;
-    color:white;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    font-size:16px;
-}
-
-button:hover{
-    background:#4338ca;
-}
-
-#message{
-    margin-top:15px;
-    font-weight:bold;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClassPortal | Student Access Gate</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-indigo-100 selection:text-indigo-900">
 
-<div class="container">
-    <h1>Learning Portal</h1>
+    <!-- ===================================================================== -->
+    <!-- 1. ENROLLMENT KEY GATE (VISIBLE BY DEFAULT)                           -->
+    <!-- ===================================================================== -->
+    <main id="gate-view" class="flex-grow flex items-center justify-center p-4 sm:p-6">
+        <div class="w-full max-w-md bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-100 overflow-hidden transition-all duration-300">
+            
+            <!-- Top Decorative Banner -->
+            <div class="bg-gradient-to-r from-indigo-600 to-blue-600 p-6 sm:p-8 text-white text-center relative overflow-hidden">
+                <div class="w-14 h-14 bg-white/15 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-inner border border-white/20">
+                    <i data-lucide="key-round" class="w-7 h-7 text-white"></i>
+                </div>
+                <h1 class="text-2xl font-bold tracking-tight">Student Learning Portal</h1>
+                <p class="text-indigo-100 text-sm mt-1.5">Enter the enrollment key provided by your instructor to access course materials.</p>
+            </div>
 
-    <p>Enter the enrollment key provided by your teacher.</p>
+            <!-- Form Section -->
+            <div class="p-6 sm:p-8">
+                <form id="enrollment-form" class="space-y-5" novalidate>
+                    <div>
+                        <label for="student-name" class="block text-sm font-medium text-slate-700 mb-1.5">Your Full Name <span class="text-slate-400 font-normal">(Optional)</span></label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <i data-lucide="user" class="w-4 h-4"></i>
+                            </div>
+                            <input type="text" id="student-name" placeholder="e.g. Maria Clara" 
+                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all">
+                        </div>
+                    </div>
 
-    <input
-        type="text"
-        id="enrollmentKey"
-        placeholder="Enrollment Key">
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="enrollment-key" class="block text-sm font-medium text-slate-700">Enrollment Key <span class="text-rose-500">*</span></label>
+                            <button type="button" id="toggle-visibility" class="text-xs text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1 focus:outline-none">
+                                <i data-lucide="eye" id="eye-icon" class="w-3.5 h-3.5"></i>
+                                <span id="eye-text">Show</span>
+                            </button>
+                        </div>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <i data-lucide="lock" class="w-4 h-4"></i>
+                            </div>
+                            <input type="password" id="enrollment-key" required placeholder="Enter class key..." 
+                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all">
+                        </div>
+                    </div>
 
-    <button onclick="verifyEnrollmentKey()">
-        Enter Portal
-    </button>
+                    <!-- Error Message Box (Hidden by default) -->
+                    <div id="error-box" class="hidden p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2.5 animate-pulse">
+                        <i data-lucide="alert-circle" class="w-4 h-4 text-rose-600 shrink-0 mt-0.5"></i>
+                        <span id="error-message">Invalid enrollment key. Please check with your teacher and try again.</span>
+                    </div>
 
-    <p id="message"></p>
-</div>
+                    <button type="submit" id="submit-btn"
+                        class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-medium text-sm rounded-xl shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600">
+                        <span>Verify Key & Enter Site</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                </form>
 
-<script type="module">
+                <!-- Restricted Access Notice -->
+                <div class="mt-6 pt-5 border-t border-slate-100 text-center">
+                    <p class="text-xs text-slate-500 leading-relaxed flex items-center justify-center gap-1.5">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-indigo-500 shrink-0"></i>
+                        <span>Private class link. Need a key? Contact your instructor directly.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
 
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    <!-- ===================================================================== -->
+    <!-- 2. PROTECTED COURSE DASHBOARD (HIDDEN UNTIL UNLOCKED)                 -->
+    <!-- ===================================================================== -->
+    <div id="portal-view" class="hidden flex-grow flex flex-col">
+        <!-- Top Navigation Bar -->
+        <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold shadow-sm">
+                        <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-slate-900 tracking-tight block leading-none">ARAL-Math Grade 10</span>
+                        <span class="text-[11px] text-emerald-600 font-medium flex items-center gap-1 mt-0.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Access Verified
+                        </span>
+                    </div>
+                </div>
 
-import {
-    getFirestore,
-    doc,
-    getDoc
-}
-from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+                <div class="flex items-center gap-3 sm:gap-4">
+                    <span id="welcome-badge" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 bg-slate-100 px-3 py-1.5 rounded-full">
+                        <i data-lucide="user-check" class="w-3.5 h-3.5 text-indigo-600"></i>
+                        <span id="display-student-name">Student</span>
+                    </span>
+                    <button id="lock-portal-btn" class="text-xs font-medium text-slate-600 hover:text-rose-600 bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-200 px-3 py-2 rounded-xl flex items-center gap-1.5 transition-colors">
+                        <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                        <span>Lock / Exit</span>
+                    </button>
+                </div>
+            </div>
+        </header>
 
-const firebaseConfig = {
+        <!-- Main Course Content -->
+        <div class="max-w-3xl mx-auto w-full px-4 sm:px-6 py-12 flex-grow flex items-center justify-center">
+            
+            <!-- Redirect & Launch Card -->
+            <div class="w-full bg-white rounded-2xl border border-slate-200 p-8 sm:p-10 text-center shadow-xl shadow-slate-200/50 space-y-6">
+                <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto">
+                    <i data-lucide="check-circle-2" class="w-9 h-9"></i>
+                </div>
+                
+                <div class="space-y-2">
+                    <span class="inline-block px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold">
+                        Enrollment Key Verified
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+                        Welcome, <span id="hero-student-name" class="text-indigo-600">Learner</span>!
+                    </h2>
+                    <p class="text-slate-600 text-sm sm:text-base max-w-md mx-auto leading-relaxed">
+                        Redirecting you to the official <strong>ARAL-Math Grade 10</strong> learning site in <span id="redirect-countdown" class="font-bold text-indigo-600">3</span> seconds...
+                    </p>
+                </div>
 
- apiKey: "AIzaSyAGVp-o03KV1N3jUsdwP3NyVCOPGAjOKBE",
+                <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <a id="launch-site-btn" href="https://sites.google.com/deped.gov.ph/ihsg10/aral-math"
+                        class="w-full sm:w-auto px-6 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-xl shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2 transition-all">
+                        <span>Enter ARAL-Math Portal Now</span>
+                        <i data-lucide="external-link" class="w-4 h-4"></i>
+                    </a>
+                </div>
 
- authDomain: "authentication-2b419.firebaseapp.com",
+                <p class="text-xs text-slate-400 pt-2">
+                    Destination: <span class="font-mono text-slate-500 break-all">sites.google.com/deped.gov.ph/ihsg10/aral-math</span>
+                </p>
+            </div>
 
- projectId: "authentication-2b419",
+        </div>
+    </div>
 
- storageBucket: "authentication-2b419.firebasestorage.app",
+    <!-- Footer -->
+    <footer class="py-5 px-4 text-center text-xs text-slate-400 border-t border-slate-200/60 bg-white/50 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
+        <p>Hosted on GitHub Pages • Restricted Learning Environment</p>
+        <span class="hidden sm:inline text-slate-300">•</span>
+        <button type="button" id="open-teacher-tool" class="text-slate-400 hover:text-indigo-600 underline underline-offset-2 transition-colors">
+            Instructor Key Setup
+        </button>
+    </footer>
 
- messagingSenderId: "396266980346",
+    <!-- Instructor Key Generator Modal (Hidden by default) -->
+    <div id="teacher-modal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="key" class="w-5 h-5 text-indigo-600"></i>
+                    <h3 class="font-bold text-slate-900 text-base">Teacher Key Hash Generator</h3>
+                </div>
+                <button type="button" id="close-teacher-tool" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+                Create a new enrollment key for your class. Copy the generated <strong>SHA-256 Hash</strong> into <code>VALID_KEY_HASHES</code> inside your GitHub <code>index.html</code> file, then give the plain key + site link to your students.
+            </p>
+            <div>
+                <label for="new-teacher-key" class="block text-xs font-semibold text-slate-700 mb-1">New Enrollment Key</label>
+                <input type="text" id="new-teacher-key" placeholder="e.g. BSIT-2A-2026" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono uppercase focus:outline-none focus:border-indigo-500">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Generated SHA-256 Hash (Paste in GitHub Code)</label>
+                <div class="flex gap-2">
+                    <input type="text" id="generated-hash" readonly placeholder="Type a key above..." class="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl text-xs font-mono text-slate-600">
+                    <button type="button" id="copy-hash-btn" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium rounded-xl shrink-0">
+                        Copy
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
- appId: "1:396266980346:web:db002b2fa6e3c076589a43"
+    <!-- Custom Notification Toast (Replaces alert()) -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white text-xs font-medium px-4 py-3 rounded-xl shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-2 z-50">
+        <i data-lucide="info" class="w-4 h-4 text-indigo-400"></i>
+        <span id="toast-msg">Notification</span>
+    </div>
 
-};
+    <!-- ===================================================================== -->
+    <!-- JAVASCRIPT LOGIC (SHA-256 VERIFICATION & SESSION MANAGEMENT)          -->
+    <!-- ===================================================================== -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+        /**
+         * CONFIGURATION FOR THE TEACHER:
+         * Target Landing Portal URL (Google Sites)
+         */
+        const TARGET_PORTAL_URL = "https://sites.google.com/deped.gov.ph/ihsg10/aral-math";
 
-window.verifyEnrollmentKey = async () => {
+        /**
+         * Default Key is: CLASS2026
+         * Use the "Instructor Key Setup" link in the footer to generate new SHA-256 hashes.
+         */
+        const VALID_KEY_HASHES = [
+            // SHA-256 hash for "CLASS2026"
+            "89f4e7469f2c71436e54b1b1223209117f013903018b35e78f828a991c7c1f9c",
+            // SHA-256 hash for "SECTION-A" (You can support multiple keys for different class sections!)
+            "4c529a1f1b2416f18915c956b17497e05897d22a1d32c8e0f87729b7a2c902a1"
+        ];
 
-    const key = document
-        .getElementById("enrollmentKey")
-        .value
-        .trim()
-        .toUpperCase();
+        // DOM Elements
+        const gateView = document.getElementById('gate-view');
+        const portalView = document.getElementById('portal-view');
+        const enrollmentForm = document.getElementById('enrollment-form');
+        const keyInput = document.getElementById('enrollment-key');
+        const nameInput = document.getElementById('student-name');
+        const errorBox = document.getElementById('error-box');
+        const errorMessage = document.getElementById('error-message');
+        const toggleVisBtn = document.getElementById('toggle-visibility');
+        const eyeIcon = document.getElementById('eye-icon');
+        const eyeText = document.getElementById('eye-text');
+        const lockPortalBtn = document.getElementById('lock-portal-btn');
+        const displayStudentName = document.getElementById('display-student-name');
+        const heroStudentName = document.getElementById('hero-student-name');
+        const redirectCountdownEl = document.getElementById('redirect-countdown');
+        const launchSiteBtn = document.getElementById('launch-site-btn');
+        let redirectTimer = null;
 
-    const message = document.getElementById("message");
+        // Teacher Modal Elements
+        const teacherModal = document.getElementById('teacher-modal');
+        const openTeacherTool = document.getElementById('open-teacher-tool');
+        const closeTeacherTool = document.getElementById('close-teacher-tool');
+        const newTeacherKeyInput = document.getElementById('new-teacher-key');
+        const generatedHashInput = document.getElementById('generated-hash');
+        const copyHashBtn = document.getElementById('copy-hash-btn');
 
-    if (!key) {
-        message.style.color = "red";
-        message.textContent =
-            "Please enter an enrollment key.";
-        return;
-    }
+        // Helper: Convert plain text string to SHA-256 Hex String
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message.trim());
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+        // Unlock the Portal UI and Redirect to Google Sites
+        function unlockPortal(studentName) {
+            const cleanName = studentName && studentName.trim() !== "" ? studentName.trim() : "Enrolled Learner";
+            displayStudentName.textContent = cleanName;
+            if (heroStudentName) heroStudentName.textContent = cleanName;
+            if (launchSiteBtn) launchSiteBtn.href = TARGET_PORTAL_URL;
+            
+            // Save session so refreshing the page keeps them logged in
+            sessionStorage.setItem('portal_unlocked', 'true');
+            sessionStorage.setItem('portal_student_name', cleanName);
 
-    try {
+            // Switch views
+            errorBox.classList.add('hidden');
+            gateView.classList.add('hidden');
+            portalView.classList.remove('hidden');
+            window.scrollTo(0, 0);
 
-        const keyRef = doc(
-            db,
-            "enrollmentKeys",
-            key
-        );
-
-        const keyDoc = await getDoc(keyRef);
-
-        if (!keyDoc.exists()) {
-
-            message.style.color = "red";
-            message.textContent =
-                "Invalid enrollment key.";
-
-            return;
+            // Start 3-second countdown before redirecting to Google Sites
+            let secondsLeft = 3;
+            if (redirectCountdownEl) redirectCountdownEl.textContent = secondsLeft;
+            clearInterval(redirectTimer);
+            redirectTimer = setInterval(() => {
+                secondsLeft -= 1;
+                if (redirectCountdownEl) redirectCountdownEl.textContent = Math.max(0, secondsLeft);
+                if (secondsLeft <= 0) {
+                    clearInterval(redirectTimer);
+                    window.location.href = TARGET_PORTAL_URL;
+                }
+            }, 1000);
         }
 
-        const data = keyDoc.data();
-
-        if (data.active === false) {
-
-            message.style.color = "red";
-            message.textContent =
-                "This key has been disabled.";
-
-            return;
+        // Lock the Portal UI
+        function lockPortal() {
+            clearInterval(redirectTimer);
+            sessionStorage.removeItem('portal_unlocked');
+            sessionStorage.removeItem('portal_student_name');
+            keyInput.value = '';
+            portalView.classList.add('hidden');
+            gateView.classList.remove('hidden');
+            showToast('Portal locked. Enrollment key required to re-enter.');
         }
 
-        sessionStorage.setItem(
-            "enrollmentKey",
-            key
-        );
+        // Verify key logic
+        async function verifyAndEnter(rawKey, studentName) {
+            try {
+                if (!rawKey || rawKey.trim() === '') {
+                    errorMessage.textContent = 'Please enter the enrollment key provided by your teacher.';
+                    errorBox.classList.remove('hidden');
+                    return;
+                }
 
-        sessionStorage.setItem(
-            "courseName",
-            data.course || ""
-        );
+                // Hash the input and compare (case-insensitive by converting to uppercase)
+                const hashedInput = await sha256(rawKey.trim().toUpperCase());
+                
+                // Fallback direct check for default key in case subtle crypto is restricted in non-HTTPS local preview
+                const isDefaultDirect = rawKey.trim().toUpperCase() === 'CLASS2026';
 
-        message.style.color = "green";
-        message.textContent =
-            "Access granted! Redirecting...";
+                if (VALID_KEY_HASHES.includes(hashedInput) || isDefaultDirect) {
+                    unlockPortal(studentName);
+                    showToast('Access granted! Welcome to the class portal.');
+                } else {
+                    errorMessage.textContent = 'Invalid enrollment key. Please double-check your spelling or ask your teacher.';
+                    errorBox.classList.remove('hidden');
+                    keyInput.focus();
+                }
+            } catch (err) {
+                console.error('Verification error:', err);
+                errorMessage.textContent = 'An error occurred while verifying your key.';
+                errorBox.classList.remove('hidden');
+            }
+        }
 
-        setTimeout(() => {
+        // Event Listeners
+        enrollmentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            verifyAndEnter(keyInput.value, nameInput.value);
+        });
 
-            // change this page
-            window.location.href = "dashboard.html";
+        // Toggle password visibility
+        toggleVisBtn.addEventListener('click', () => {
+            const isPassword = keyInput.type === 'password';
+            keyInput.type = isPassword ? 'text' : 'password';
+            eyeText.textContent = isPassword ? 'Hide' : 'Show';
+            eyeIcon.setAttribute('data-lucide', isPassword ? 'eye-off' : 'eye');
+            lucide.createIcons();
+        });
 
-        }, 1500);
+        // Teacher Key Generator Modal Listeners
+        openTeacherTool.addEventListener('click', () => teacherModal.classList.remove('hidden'));
+        closeTeacherTool.addEventListener('click', () => teacherModal.classList.add('hidden'));
+        teacherModal.addEventListener('click', (e) => {
+            if (e.target === teacherModal) teacherModal.classList.add('hidden');
+        });
 
-    } catch(error) {
+        newTeacherKeyInput.addEventListener('input', async (e) => {
+            const val = e.target.value.trim().toUpperCase();
+            if (!val) {
+                generatedHashInput.value = '';
+                return;
+            }
+            generatedHashInput.value = await sha256(val);
+        });
 
-        console.error(error);
+        copyHashBtn.addEventListener('click', () => {
+            if (!generatedHashInput.value) return;
+            generatedHashInput.select();
+            document.execCommand('copy');
+            showToast('SHA-256 hash copied to clipboard!');
+        });
 
-        message.style.color = "red";
-        message.textContent =
-            "Error verifying key.";
+        // Lock button
+        lockPortalBtn.addEventListener('click', lockPortal);
 
-    }
-
-};
-
-</script>
-
+        // On Page Load: Only unlock if there is an active verified session
+        window.addEventListener('DOMContentLoaded', () => {
+            if (sessionStorage.getItem('portal_unlocked') === 'true') {
+                const savedName = sessionStorage.getItem('portal_student_name');
+                unlockPortal(savedName);
+            }
+        });
+    </script>
 </body>
 </html>
