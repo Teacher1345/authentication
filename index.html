@@ -1,81 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learning Portal</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial, sans-serif;
+    background:linear-gradient(135deg,#4f46e5,#7c3aed);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.container{
+    background:white;
+    width:90%;
+    max-width:400px;
+    padding:40px;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
+}
+
+h1{
+    margin-bottom:10px;
+    color:#333;
+}
+
+p{
+    color:#666;
+    margin-bottom:20px;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    margin-bottom:15px;
+    font-size:16px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    background:#4f46e5;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+button:hover{
+    background:#4338ca;
+}
+
+#message{
+    margin-top:15px;
+    font-weight:bold;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Learning Portal</h1>
+
+    <p>Enter the enrollment key provided by your teacher.</p>
+
+    <input
+        type="text"
+        id="enrollmentKey"
+        placeholder="Enrollment Key">
+
+    <button onclick="verifyEnrollmentKey()">
+        Enter Portal
+    </button>
+
+    <p id="message"></p>
+</div>
+
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-  import {
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+
+import {
     getFirestore,
     doc,
     getDoc
-  } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+}
+from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAGVp-o03KV1N3jUsdwP3NyVCOPGAjOKBE",
-    authDomain: "authentication-2b419.firebaseapp.com",
-    projectId: "authentication-2b419",
-    storageBucket: "authentication-2b419.firebasestorage.app",
-    messagingSenderId: "396266980346",
-    appId: "1:396266980346:web:db002b2fa6e3c076589a43"
-  };
+const firebaseConfig = {
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+ apiKey: "AIzaSyAGVp-o03KV1N3jUsdwP3NyVCOPGAjOKBE",
 
-  // Make function available to button onclick
-  window.verifyEnrollmentKey = async function () {
+ authDomain: "authentication-2b419.firebaseapp.com",
 
-    const keyInput = document
-      .getElementById("enrollmentKey")
-      .value
-      .trim();
+ projectId: "authentication-2b419",
+
+ storageBucket: "authentication-2b419.firebasestorage.app",
+
+ messagingSenderId: "396266980346",
+
+ appId: "1:396266980346:web:db002b2fa6e3c076589a43"
+
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.verifyEnrollmentKey = async () => {
+
+    const key = document
+        .getElementById("enrollmentKey")
+        .value
+        .trim()
+        .toUpperCase();
 
     const message = document.getElementById("message");
 
-    if (!keyInput) {
-      message.textContent = "Please enter your enrollment key.";
-      message.style.color = "red";
-      return;
+    if (!key) {
+        message.style.color = "red";
+        message.textContent =
+            "Please enter an enrollment key.";
+        return;
     }
 
     try {
 
-      const keyRef = doc(db, "enrollmentKeys", keyInput);
-      const keyDoc = await getDoc(keyRef);
-
-      if (!keyDoc.exists()) {
-        message.textContent = "Invalid enrollment key.";
-        message.style.color = "red";
-        return;
-      }
-
-      const data = keyDoc.data();
-
-      if (data.active === false) {
-        message.textContent = "This enrollment key has been disabled.";
-        message.style.color = "red";
-        return;
-      }
-
-      // Save key data for next page
-      sessionStorage.setItem("enrollmentKey", keyInput);
-
-      if (data.course) {
-        sessionStorage.setItem(
-          "courseName",
-          data.course
+        const keyRef = doc(
+            db,
+            "enrollmentKeys",
+            key
         );
-      }
 
-      message.textContent = "Access granted. Redirecting...";
-      message.style.color = "green";
+        const keyDoc = await getDoc(keyRef);
 
-      setTimeout(() => {
-        window.location.href = "register.html";
-      }, 1000);
+        if (!keyDoc.exists()) {
 
-    } catch (error) {
-      console.error(error);
-      message.textContent =
-        "Unable to verify key. Please try again.";
-      message.style.color = "red";
+            message.style.color = "red";
+            message.textContent =
+                "Invalid enrollment key.";
+
+            return;
+        }
+
+        const data = keyDoc.data();
+
+        if (data.active === false) {
+
+            message.style.color = "red";
+            message.textContent =
+                "This key has been disabled.";
+
+            return;
+        }
+
+        sessionStorage.setItem(
+            "enrollmentKey",
+            key
+        );
+
+        sessionStorage.setItem(
+            "courseName",
+            data.course || ""
+        );
+
+        message.style.color = "green";
+        message.textContent =
+            "Access granted! Redirecting...";
+
+        setTimeout(() => {
+
+            // change this page
+            window.location.href = "dashboard.html";
+
+        }, 1500);
+
+    } catch(error) {
+
+        console.error(error);
+
+        message.style.color = "red";
+        message.textContent =
+            "Error verifying key.";
+
     }
-  };
+
+};
+
 </script>
+
+</body>
+</html>
