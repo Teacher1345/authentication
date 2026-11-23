@@ -13,9 +13,12 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body {
+        html, body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
+            margin: 0 !important;
+            padding: 0 !important;
+            vertical-align: top;
         }
         @keyframes fadeInScale {
             from { opacity: 0; transform: scale(0.98) translateY(8px); }
@@ -34,22 +37,22 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-start text-slate-800 bg-gradient-to-br from-slate-50 via-indigo-50/40 to-slate-100 selection:bg-indigo-600 selection:text-white">
+<body class="block m-0 p-0 text-slate-800 bg-gradient-to-br from-slate-50 via-indigo-50/40 to-slate-100 selection:bg-indigo-600 selection:text-white">
 
     <!-- ===================================================================== -->
     <!-- 1. ENROLLMENT KEY GATE (Visible by default until valid key entered)   -->
     <!-- ===================================================================== -->
-    <main id="gate-view" class="w-full flex items-start justify-center pt-4 sm:pt-6 pb-8 px-4 sm:px-6">
-        <div class="w-full max-w-md animate-gate">
+    <main id="gate-view" class="w-full block pt-2 pb-6 px-3 sm:px-6 m-0">
+        <div class="w-full max-w-md mx-auto animate-gate">
             <!-- Top Emblem / Header -->
-            <div class="text-center mb-6">
-                <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 mb-4">
-                    <i data-lucide="key-round" class="w-7 h-7"></i>
+            <div class="text-center mb-4">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 mb-2.5">
+                    <i data-lucide="key-round" class="w-6 h-6"></i>
                 </div>
                 <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
                     Class Portal Access
                 </h1>
-                <p class="text-sm text-slate-500 mt-1.5 max-w-xs mx-auto">
+                <p class="text-sm text-slate-500 mt-1 max-w-xs mx-auto">
                     This learning portal is restricted. Enter the enrollment key given by your teacher to continue.
                 </p>
             </div>
@@ -132,7 +135,7 @@
     <!-- ===================================================================== -->
     <!-- 2. UNLOCKED REDIRECT / PORTAL LAUNCHER (Hidden until key is verified) -->
     <!-- ===================================================================== -->
-    <div id="portal-view" class="hidden flex-1 flex flex-col">
+    <div id="portal-view" class="hidden w-full block m-0 p-0">
         <!-- Top Navigation Bar -->
         <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -166,8 +169,8 @@
         </header>
 
         <!-- Redirect Confirmation Card -->
-        <div class="flex-1 flex items-center justify-center p-4 sm:p-6">
-            <div class="w-full max-w-lg bg-white border border-slate-200/80 rounded-2xl shadow-xl shadow-slate-200/50 p-6 sm:p-10 text-center space-y-5 animate-gate">
+        <div class="w-full pt-4 pb-8 px-4 sm:px-6">
+            <div class="w-full max-w-lg mx-auto bg-white border border-slate-200/80 rounded-2xl shadow-xl shadow-slate-200/50 p-6 sm:p-8 text-center space-y-5 animate-gate">
                 <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 mx-auto">
                     <i data-lucide="check-circle-2" class="w-8 h-8"></i>
                 </div>
@@ -185,7 +188,7 @@
                 </div>
 
                 <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-                    <a id="launch-site-btn" href="https://sites.google.com/deped.gov.ph/ihsg10/aral-math"
+                    <a id="launch-site-btn" href="https://sites.google.com/deped.gov.ph/ihsg10/aral-math" target="_top"
                         class="w-full sm:w-auto px-6 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-xl shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2 transition-all">
                         <span>Enter Learning Portal Now</span>
                         <i data-lucide="external-link" class="w-4 h-4"></i>
@@ -200,7 +203,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="mt-auto py-5 px-4 text-center text-xs text-slate-400 border-t border-slate-200/60 bg-white/50 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
+    <footer class="mt-4 py-4 px-4 text-center text-xs text-slate-400 border-t border-slate-200/60 bg-white/50 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
         <p>Cloud-Synced Access Portal • Restricted Learning Environment</p>
         <span class="hidden sm:inline text-slate-300">•</span>
         <button type="button" id="open-teacher-tool" class="text-slate-400 hover:text-indigo-600 underline underline-offset-2 transition-colors">
@@ -642,7 +645,11 @@
                 if (redirectCountdownEl) redirectCountdownEl.textContent = Math.max(0, secondsLeft);
                 if (secondsLeft <= 0) {
                     clearInterval(redirectTimer);
-                    window.location.href = targetUrl;
+                    try {
+                        window.top.location.href = targetUrl;
+                    } catch (e) {
+                        window.location.href = targetUrl;
+                    }
                 }
             }, 1000);
         }
