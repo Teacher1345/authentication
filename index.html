@@ -40,7 +40,7 @@
 <body class="block m-0 p-0 text-slate-800 bg-gradient-to-br from-slate-50 via-indigo-50/40 to-slate-100 selection:bg-indigo-600 selection:text-white">
 
     <!-- ===================================================================== -->
-    <!-- 1. ENROLLMENT KEY GATE (Visible by default until valid key entered)   -->
+    <!-- 1. ENROLLMENT KEY GATE (Always anchored at top, requires key on load) -->
     <!-- ===================================================================== -->
     <main id="gate-view" class="w-full block pt-2 pb-6 px-3 sm:px-6 m-0">
         <div class="w-full max-w-md mx-auto animate-gate">
@@ -182,13 +182,13 @@
                     <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
                         Welcome, <span id="hero-student-name" class="text-indigo-600">Learner</span>!
                     </h2>
-                    <p class="text-slate-600 text-sm sm:text-base max-w-md mx-auto leading-relaxed">
-                        Redirecting you to <strong id="hero-course-label">your assigned learning portal</strong> in <span id="redirect-countdown" class="font-bold text-indigo-600">3</span> seconds...
+                    <p id="redirect-status-text" class="text-slate-600 text-sm sm:text-base max-w-md mx-auto leading-relaxed">
+                        Redirecting you to <strong id="hero-course-label">your assigned learning portal</strong> in <span id="redirect-countdown" class="font-bold text-indigo-600">2</span> seconds...
                     </p>
                 </div>
 
                 <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-                    <a id="launch-site-btn" href="https://sites.google.com/deped.gov.ph/ihsg10/aral-math" target="_top"
+                    <a id="launch-site-btn" href="https://sites.google.com/deped.gov.ph/ihsg10/aral-math" target="_blank" rel="noopener noreferrer"
                         class="w-full sm:w-auto px-6 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-xl shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2 transition-all">
                         <span>Enter Learning Portal Now</span>
                         <i data-lucide="external-link" class="w-4 h-4"></i>
@@ -206,14 +206,16 @@
     <footer class="mt-4 py-4 px-4 text-center text-xs text-slate-400 border-t border-slate-200/60 bg-white/50 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
         <p>Cloud-Synced Access Portal • Restricted Learning Environment</p>
         <span class="hidden sm:inline text-slate-300">•</span>
-        <button type="button" id="open-teacher-tool" class="text-slate-400 hover:text-indigo-600 underline underline-offset-2 transition-colors">
+        <button type="button" id="open-teacher-tool" class="text-slate-400 hover:text-indigo-600 underline underline-offset-2 transition-colors cursor-pointer">
             Instructor Key &amp; Attendance Manager
         </button>
     </footer>
 
-    <!-- Instructor Key & Attendance Manager Modal (Hidden by default) -->
-    <div id="teacher-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 space-y-5 my-8">
+    <!-- ===================================================================== -->
+    <!-- 3. INSTRUCTOR KEY & ATTENDANCE MANAGER MODAL                          -->
+    <!-- ===================================================================== -->
+    <div id="teacher-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-start justify-center p-4 pt-6 sm:pt-12 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 space-y-5 mb-8">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div class="flex items-center gap-2.5">
                     <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
@@ -221,40 +223,40 @@
                     </div>
                     <div>
                         <h3 class="font-bold text-slate-900 text-base leading-tight">Instructor Portal Manager</h3>
-                        <p id="storage-mode-subtitle" class="text-[11px] text-slate-500">Checking storage connection...</p>
+                        <p id="storage-mode-subtitle" class="text-[11px] text-slate-500">Connecting to cloud storage...</p>
                     </div>
                 </div>
-                <button type="button" id="close-teacher-tool" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+                <button type="button" id="close-teacher-tool" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg cursor-pointer">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
 
-            <!-- Admin Passcode Lock (Protects Teacher Console) -->
+            <!-- Admin Passcode Lock -->
             <div id="admin-lock-screen" class="space-y-4 py-2">
                 <div class="p-3.5 rounded-xl bg-indigo-50/70 border border-indigo-100 text-xs text-indigo-900 leading-relaxed">
                     Enter your <strong>Instructor Admin Passcode</strong> to register new enrollment keys, assign landing sites, or view student entry logs.
                 </div>
                 <div class="flex flex-col sm:flex-row gap-2">
                     <input type="password" id="admin-passcode-input" placeholder="Enter instructor passcode..." class="flex-1 px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500">
-                    <button type="button" id="unlock-admin-btn" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl transition-colors shrink-0">
+                    <button type="button" id="unlock-admin-btn" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl transition-colors shrink-0 cursor-pointer">
                         Unlock Console
                     </button>
                 </div>
                 <p id="admin-lock-error" class="hidden text-xs text-rose-600 font-medium">Incorrect instructor passcode.</p>
             </div>
 
-            <!-- Admin Console Content (Hidden until passcode verified) -->
+            <!-- Admin Console Body -->
             <div id="admin-console-body" class="hidden space-y-5">
                 <!-- Tabs -->
                 <div class="flex flex-wrap gap-2 border-b border-slate-100 pb-2">
-                    <button type="button" id="tab-routes-btn" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-colors">
+                    <button type="button" id="tab-routes-btn" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-colors cursor-pointer">
                         Enrollment Keys &amp; Sites
                     </button>
-                    <button type="button" id="tab-logs-btn" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">
+                    <button type="button" id="tab-logs-btn" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
                         Student Access Logs (<span id="log-count-badge">0</span>)
                     </button>
-                    <button type="button" id="tab-cloud-btn" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">
-                        GitHub / Cloud Setup
+                    <button type="button" id="tab-cloud-btn" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer">
+                        Cloud Status &amp; Rules
                     </button>
                 </div>
 
@@ -271,10 +273,11 @@
                         </div>
                         <div class="sm:col-span-5">
                             <label class="block text-[11px] font-semibold text-slate-700 mb-1">Associated Landing Site URL</label>
-                            <input type="url" id="route-url" required placeholder="https://sites.google.com/..." class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs font-mono focus:outline-none focus:border-indigo-500">
+                            <input type="text" id="route-url" required placeholder="https://sites.google.com/..." class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs font-mono focus:outline-none focus:border-indigo-500">
                         </div>
-                        <div class="sm:col-span-12 flex justify-end pt-1">
-                            <button type="submit" id="save-route-btn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 shadow-xs transition-colors">
+                        <div class="sm:col-span-12 flex items-center justify-between pt-1 gap-2">
+                            <span id="route-form-status" class="text-[11px] text-slate-500"></span>
+                            <button type="submit" id="save-route-btn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer shrink-0">
                                 <i data-lucide="plus-circle" class="w-4 h-4"></i>
                                 <span>Register Key &amp; Landing Site</span>
                             </button>
@@ -286,7 +289,7 @@
                         <div class="flex items-center justify-between">
                             <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Registered Keys &amp; Destinations</h4>
                             <span id="cloud-sync-indicator" class="text-[11px] text-emerald-600 font-medium flex items-center gap-1">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Ready
                             </span>
                         </div>
                         <div id="routes-list" class="max-h-56 overflow-y-auto divide-y divide-slate-100 border border-slate-200 rounded-xl bg-white">
@@ -299,7 +302,7 @@
                 <div id="tab-logs-panel" class="hidden space-y-3">
                     <div class="flex items-center justify-between">
                         <p class="text-xs text-slate-500">Real-time log of learners who unlocked the portal.</p>
-                        <button type="button" id="export-csv-btn" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-medium rounded-lg flex items-center gap-1.5">
+                        <button type="button" id="export-csv-btn" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-medium rounded-lg flex items-center gap-1.5 cursor-pointer">
                             <i data-lucide="download" class="w-3.5 h-3.5"></i>
                             <span>Export CSV</span>
                         </button>
@@ -309,19 +312,25 @@
                     </div>
                 </div>
 
-                <!-- TAB 3: GITHUB PAGES CLOUD CONFIG -->
+                <!-- TAB 3: CLOUD STATUS & SETUP -->
                 <div id="tab-cloud-panel" class="hidden space-y-3 text-xs text-slate-600">
-                    <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 leading-relaxed">
-                        <strong>Hosting on GitHub Pages?</strong> GitHub Pages serves static HTML files, so to sync keys &amp; logs across all student devices, paste your free Firebase Web App config object below (or hardcode it into <code>GITHUB_FIREBASE_CONFIG</code> in <code>index.html</code>).
+                    <div id="cloud-diagnostic-box" class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 leading-relaxed">
+                        Checking connection to project <code>authentication-2b419</code>...
                     </div>
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Firebase Config JSON (Optional for GitHub Pages)</label>
-                        <textarea id="firebase-config-textarea" rows="4" placeholder='{"apiKey":"...","authDomain":"...","projectId":"..."}' class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-[11px] focus:outline-none focus:border-indigo-500"></textarea>
-                    </div>
-                    <div class="flex justify-end">
-                        <button type="button" id="connect-custom-firebase-btn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl">
-                            Connect Cloud Database
-                        </button>
+                    <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 leading-relaxed space-y-1.5">
+                        <p><strong>If cloud writes are blocked (permission-denied):</strong></p>
+                        <ol class="list-decimal pl-4 space-y-1">
+                            <li>Open Firebase Console &rarr; <strong>Authentication &rarr; Sign-in method</strong> &rarr; enable <strong>Anonymous</strong>.</li>
+                            <li>Open <strong>Firestore Database &rarr; Rules</strong> and publish:</li>
+                        </ol>
+                        <pre class="mt-2 p-2.5 bg-white/80 rounded-lg border border-amber-200 font-mono text-[10px] overflow-x-auto text-slate-800">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /artifacts/{appId}/public/data/{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}</pre>
                     </div>
                 </div>
             </div>
@@ -329,8 +338,8 @@
     </div>
 
     <!-- Custom Notification Toast (Replaces alert()) -->
-    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white text-xs font-medium px-4 py-3 rounded-xl shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-2 z-50">
-        <i data-lucide="info" class="w-4 h-4 text-indigo-400"></i>
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white text-xs font-medium px-4 py-3 rounded-xl shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-2 z-50 max-w-sm">
+        <i data-lucide="info" class="w-4 h-4 text-indigo-400 shrink-0"></i>
         <span id="toast-msg">Notification</span>
     </div>
 
@@ -363,9 +372,7 @@
         };
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'aral-math-portal';
-        let activeFirebaseConfig = typeof __firebase_config !== 'undefined'
-            ? JSON.parse(__firebase_config)
-            : GITHUB_FIREBASE_CONFIG;
+        const activeFirebaseConfig = GITHUB_FIREBASE_CONFIG;
 
         let db = null;
         let auth = null;
@@ -373,7 +380,7 @@
         let isCloudConnected = false;
 
         /**
-         * Default Instructor Admin Passcode
+         * Instructor Admin Passcode (case-insensitive)
          */
         const INSTRUCTOR_ADMIN_PASSCODE = "TEACHER2026";
 
@@ -394,7 +401,7 @@
         let accessLogs = [];
         let redirectTimer = null;
 
-        // DOM Elements
+        // DOM Elements — Learner Gate
         const gateView = document.getElementById('gate-view');
         const portalView = document.getElementById('portal-view');
         const enrollmentForm = document.getElementById('enrollment-form');
@@ -410,14 +417,17 @@
         const heroStudentName = document.getElementById('hero-student-name');
         const heroCourseLabel = document.getElementById('hero-course-label');
         const heroDestinationUrl = document.getElementById('hero-destination-url');
+        const redirectStatusText = document.getElementById('redirect-status-text');
         const redirectCountdownEl = document.getElementById('redirect-countdown');
         const launchSiteBtn = document.getElementById('launch-site-btn');
 
-        // Teacher Console Elements
+        // DOM Elements — Instructor Console
         const teacherModal = document.getElementById('teacher-modal');
         const openTeacherTool = document.getElementById('open-teacher-tool');
         const closeTeacherTool = document.getElementById('close-teacher-tool');
         const storageModeSubtitle = document.getElementById('storage-mode-subtitle');
+        const cloudDiagnosticBox = document.getElementById('cloud-diagnostic-box');
+        const cloudSyncIndicator = document.getElementById('cloud-sync-indicator');
         const adminLockScreen = document.getElementById('admin-lock-screen');
         const adminPasscodeInput = document.getElementById('admin-passcode-input');
         const unlockAdminBtn = document.getElementById('unlock-admin-btn');
@@ -435,13 +445,12 @@
         const routeLabelInput = document.getElementById('route-label');
         const routeKeyInput = document.getElementById('route-key');
         const routeUrlInput = document.getElementById('route-url');
+        const routeFormStatus = document.getElementById('route-form-status');
         const saveRouteBtn = document.getElementById('save-route-btn');
         const routesListEl = document.getElementById('routes-list');
         const logsListEl = document.getElementById('logs-list');
         const logCountBadge = document.getElementById('log-count-badge');
         const exportCsvBtn = document.getElementById('export-csv-btn');
-        const firebaseConfigTextarea = document.getElementById('firebase-config-textarea');
-        const connectCustomFirebaseBtn = document.getElementById('connect-custom-firebase-btn');
 
         // Helper: Show custom toast notification
         function showToast(msg) {
@@ -452,10 +461,20 @@
             toast.classList.remove('translate-y-20', 'opacity-0');
             setTimeout(() => {
                 toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
+            }, 3500);
         }
 
-        // Helper: SHA-256 Hash for Document IDs
+        // Helper: Escape HTML for safe rendering
+        function escapeHtml(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        // Helper: SHA-256 Hash for deterministic Document IDs
         async function sha256(message) {
             const msgBuffer = new TextEncoder().encode(message.trim().toUpperCase());
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -463,26 +482,36 @@
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
-        // Initialize Cloud Connection & Real-Time Listeners
-        async function initCloudStorage(customConfig = null) {
-            const configToUse = customConfig || activeFirebaseConfig;
-
-            if (!configToUse || !configToUse.apiKey) {
-                isCloudConnected = false;
-                if (storageModeSubtitle) {
-                    storageModeSubtitle.textContent = "Session Mode • Connect Firebase in 'GitHub / Cloud Setup' for multi-device sync";
-                }
-                renderRoutesList();
-                renderLogsList();
-                return;
+        // Helper: Update Cloud Status Indicators
+        function updateCloudStatusUI(connected, detailMessage) {
+            isCloudConnected = connected;
+            if (storageModeSubtitle) {
+                storageModeSubtitle.textContent = detailMessage;
             }
+            if (cloudDiagnosticBox) {
+                cloudDiagnosticBox.innerHTML = connected
+                    ? `<span class="text-emerald-700 font-semibold">Connected:</span> ${escapeHtml(detailMessage)}`
+                    : `<span class="text-amber-700 font-semibold">Notice:</span> ${escapeHtml(detailMessage)}`;
+            }
+            if (cloudSyncIndicator) {
+                cloudSyncIndicator.innerHTML = connected
+                    ? `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Cloud Synced`
+                    : `<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Session Fallback`;
+                cloudSyncIndicator.className = connected
+                    ? 'text-[11px] text-emerald-600 font-medium flex items-center gap-1'
+                    : 'text-[11px] text-amber-600 font-medium flex items-center gap-1';
+            }
+        }
 
+        // Initialize Cloud Connection & Real-Time Listeners
+        async function initCloudStorage() {
             try {
-                const app = getApps().length === 0 ? initializeApp(configToUse) : getApps()[0];
+                const app = getApps().length === 0 ? initializeApp(activeFirebaseConfig) : getApps()[0];
                 auth = getAuth(app);
                 db = getFirestore(app);
 
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token && !customConfig) {
+                // Authenticate FIRST before any Firestore operations
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     const cred = await signInWithCustomToken(auth, __initial_auth_token);
                     currentUser = cred.user;
                 } else {
@@ -490,13 +519,16 @@
                     currentUser = cred.user;
                 }
 
-                if (!currentUser) return;
-                isCloudConnected = true;
-                if (storageModeSubtitle) {
-                    storageModeSubtitle.textContent = "Live Cloud Database Connected • Instant Multi-Device Sync";
+                if (!currentUser) {
+                    updateCloudStatusUI(false, "Authentication failed. Using session fallback.");
+                    renderRoutesList();
+                    renderLogsList();
+                    return;
                 }
 
-                // Listen to registered enrollment key routes
+                updateCloudStatusUI(true, `Live Cloud Connected (${activeFirebaseConfig.projectId})`);
+
+                // Real-time listener: Enrollment Routes
                 const routesCol = collection(db, 'artifacts', appId, 'public', 'data', 'enrollment_routes');
                 onSnapshot(routesCol, (snapshot) => {
                     const cloudRoutes = [];
@@ -504,15 +536,17 @@
                         cloudRoutes.push({ id: docSnap.id, ...docSnap.data() });
                     });
 
-                    const hasDefault = cloudRoutes.some(r => r.keyCode === 'ARALMATHB2');
+                    const hasDefault = cloudRoutes.some(r => (r.keyCode || '').toUpperCase() === 'ARALMATHB2');
                     registeredRoutes = hasDefault ? cloudRoutes : [...DEFAULT_FALLBACK_ROUTES, ...cloudRoutes];
                     registeredRoutes.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
                     renderRoutesList();
                 }, (err) => {
                     console.error("Routes sync error:", err);
+                    updateCloudStatusUI(false, `Cloud Read Blocked (${err.code || 'error'}). Check Firestore Rules in 'Cloud Status & Rules'.`);
+                    renderRoutesList();
                 });
 
-                // Listen to student entry logs
+                // Real-time listener: Student Access Logs
                 const logsCol = collection(db, 'artifacts', appId, 'public', 'data', 'access_logs');
                 onSnapshot(logsCol, (snapshot) => {
                     const items = [];
@@ -528,80 +562,97 @@
 
             } catch (err) {
                 console.error("Cloud initialization error:", err);
-                isCloudConnected = false;
-                if (storageModeSubtitle) {
-                    storageModeSubtitle.textContent = "Session Mode • Cloud connection unavailable";
-                }
+                const code = err?.code || 'init-error';
+                const hint = code === 'auth/operation-not-allowed'
+                    ? "Enable Anonymous Sign-in in Firebase Console (Authentication → Sign-in method)."
+                    : `Cloud connection unavailable (${code}). Running in session mode.`;
+                updateCloudStatusUI(false, hint);
                 renderRoutesList();
+                renderLogsList();
             }
         }
 
-        // Render Registered Keys & Associated Landing Sites
+        // Render Registered Enrollment Keys & Destinations
         function renderRoutesList() {
             if (!routesListEl) return;
-            if (registeredRoutes.length === 0) {
+            if (!registeredRoutes.length) {
                 routesListEl.innerHTML = `<div class="p-4 text-center text-xs text-slate-400">No enrollment keys registered yet.</div>`;
                 return;
             }
 
-            routesListEl.innerHTML = registeredRoutes.map(route => `
-                <div class="p-3 flex items-center justify-between gap-3 hover:bg-slate-50 transition-colors">
-                    <div class="min-w-0 flex-1">
-                        <div class="flex items-center gap-2">
-                            <span class="px-2 py-0.5 bg-indigo-100 text-indigo-800 font-mono font-bold text-xs rounded-md">${escapeHtml(route.keyCode)}</span>
-                            <span class="font-semibold text-slate-800 text-xs truncate">${escapeHtml(route.label || 'Course Portal')}</span>
+            routesListEl.innerHTML = registeredRoutes.map((route) => {
+                const isDefault = route.id === 'default-aralmathb2';
+                return `
+                    <div class="p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-slate-50/70 transition-colors">
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 font-mono text-xs font-bold tracking-wide">
+                                    ${escapeHtml(route.keyCode)}
+                                </span>
+                                <span class="text-xs font-semibold text-slate-800 truncate">
+                                    ${escapeHtml(route.label || 'Untitled Portal')}
+                                </span>
+                                ${isDefault ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-500">Built-in</span>' : ''}
+                            </div>
+                            <a href="${escapeHtml(route.landingUrl)}" target="_blank" rel="noopener noreferrer" class="text-[11px] text-slate-500 hover:text-indigo-600 font-mono truncate block mt-1">
+                                ${escapeHtml(route.landingUrl)}
+                            </a>
                         </div>
-                        <p class="text-[11px] font-mono text-slate-500 truncate mt-1">${escapeHtml(route.landingUrl)}</p>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button type="button" data-delete-id="${escapeHtml(route.id)}" class="delete-route-btn px-2.5 py-1.5 text-[11px] font-medium text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer ${isDefault ? 'opacity-40 cursor-not-allowed' : ''}" ${isDefault ? 'disabled title="Built-in fallback key"' : ''}>
+                                Remove
+                            </button>
+                        </div>
                     </div>
-                    <button type="button" data-delete-route="${escapeHtml(route.id)}" class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors shrink-0" title="Remove Key">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            `).join('');
+                `;
+            }).join('');
 
-            renderIcons();
-
-            routesListEl.querySelectorAll('[data-delete-route]').forEach(btn => {
+            // Attach delete handlers
+            routesListEl.querySelectorAll('.delete-route-btn:not([disabled])').forEach((btn) => {
                 btn.addEventListener('click', async () => {
-                    const routeId = btn.getAttribute('data-delete-route');
-                    if (routeId === 'default-aralmathb2') {
-                        showToast('Default key ARALMATHB2 can be overridden by adding a new route with the same key.');
-                        return;
-                    }
+                    const routeId = btn.getAttribute('data-delete-id');
+                    if (!routeId) return;
+
                     if (isCloudConnected && db && currentUser) {
                         try {
                             await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'enrollment_routes', routeId));
                             showToast('Enrollment key removed from cloud.');
                         } catch (err) {
-                            console.error('Delete route error:', err);
-                            showToast('Could not remove key.');
+                            console.error("Delete route error:", err);
+                            registeredRoutes = registeredRoutes.filter(r => r.id !== routeId);
+                            renderRoutesList();
+                            showToast(`Removed locally (Cloud error: ${err.code || 'denied'}).`);
                         }
                     } else {
                         registeredRoutes = registeredRoutes.filter(r => r.id !== routeId);
                         renderRoutesList();
-                        showToast('Enrollment key removed.');
+                        showToast('Enrollment key removed from session.');
                     }
                 });
             });
         }
 
-        // Render Student Entry Attendance Logs
+        // Render Student Attendance / Access Logs
         function renderLogsList() {
-            if (logCountBadge) logCountBadge.textContent = accessLogs.length;
+            if (logCountBadge) {
+                logCountBadge.textContent = String(accessLogs.length);
+            }
             if (!logsListEl) return;
 
-            if (accessLogs.length === 0) {
+            if (!accessLogs.length) {
                 logsListEl.innerHTML = `<div class="p-4 text-center text-xs text-slate-400">No student logins recorded yet.</div>`;
                 return;
             }
 
-            logsListEl.innerHTML = accessLogs.map(log => {
-                const dateStr = log.timestamp ? new Date(log.timestamp).toLocaleString() : 'Just now';
+            logsListEl.innerHTML = accessLogs.map((log) => {
+                const dateStr = log.timestamp ? new Date(log.timestamp).toLocaleString() : 'Unknown time';
                 return `
-                    <div class="p-3 flex items-center justify-between gap-2 text-xs">
+                    <div class="p-3 flex items-center justify-between gap-3 text-xs">
                         <div class="min-w-0">
-                            <p class="font-semibold text-slate-800 truncate">${escapeHtml(log.studentName || 'Enrolled Learner')}</p>
-                            <p class="text-[11px] text-slate-500">Key: <span class="font-mono font-semibold text-indigo-600">${escapeHtml(log.keyCode)}</span> • ${escapeHtml(log.courseLabel || '')}</p>
+                            <p class="font-semibold text-slate-800 truncate">${escapeHtml(log.studentName || 'Anonymous Learner')}</p>
+                            <p class="text-[11px] text-slate-500 mt-0.5">
+                                Key: <span class="font-mono font-semibold text-indigo-600">${escapeHtml(log.keyCode)}</span> • ${escapeHtml(log.courseLabel || '')}
+                            </p>
                         </div>
                         <span class="text-[11px] text-slate-400 shrink-0">${escapeHtml(dateStr)}</span>
                     </div>
@@ -609,237 +660,305 @@
             }).join('');
         }
 
-        function escapeHtml(str) {
-            return String(str || '').replace(/[&<>"']/g, m => ({
-                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-            }[m]));
+        // Helper: Show / Hide Form Error Message
+        function showError(msg) {
+            errorMessage.textContent = msg;
+            errorBox.classList.remove('hidden');
+            errorBox.classList.remove('animate-shake');
+            void errorBox.offsetWidth;
+            errorBox.classList.add('animate-shake');
+            renderIcons();
         }
 
-        // Unlock the Portal UI and Redirect to the Matched Landing Site
-        function unlockPortal(studentName, matchedRoute) {
-            const cleanName = studentName && studentName.trim() !== "" ? studentName.trim() : "Enrolled Learner";
-            const targetUrl = matchedRoute.landingUrl;
-            const courseLabel = matchedRoute.label || "Course Portal";
+        function hideError() {
+            errorBox.classList.add('hidden');
+        }
+
+        // Unlock Portal & Navigate to Destination (Handles both standalone & embedded Google Sites)
+        function unlockPortal(studentName, route) {
+            const cleanName = studentName.trim() || 'Learner';
+            const destUrl = route.landingUrl;
+            const courseLabel = route.label || 'your learning portal';
+            const isEmbedded = window.self !== window.top;
 
             displayStudentName.textContent = cleanName;
-            if (heroStudentName) heroStudentName.textContent = cleanName;
-            if (heroCourseLabel) heroCourseLabel.textContent = courseLabel;
-            if (heroDestinationUrl) heroDestinationUrl.textContent = targetUrl.replace(/^https?:\/\//, '');
-            if (launchSiteBtn) launchSiteBtn.href = targetUrl;
+            heroStudentName.textContent = cleanName;
+            heroDestinationUrl.textContent = destUrl.replace(/^https?:\/\//i, '');
+            launchSiteBtn.href = destUrl;
 
-            errorBox.classList.add('hidden');
             gateView.classList.add('hidden');
             portalView.classList.remove('hidden');
             window.scrollTo(0, 0);
+            renderIcons();
 
-            let secondsLeft = 3;
-            if (redirectCountdownEl) redirectCountdownEl.textContent = secondsLeft;
-            clearInterval(redirectTimer);
-            redirectTimer = setInterval(() => {
-                secondsLeft -= 1;
-                if (redirectCountdownEl) redirectCountdownEl.textContent = Math.max(0, secondsLeft);
-                if (secondsLeft <= 0) {
-                    clearInterval(redirectTimer);
-                    try {
-                        window.top.location.href = targetUrl;
-                    } catch (e) {
-                        window.location.href = targetUrl;
-                    }
-                }
-            }, 1000);
-        }
+            if (redirectTimer) {
+                clearInterval(redirectTimer);
+                redirectTimer = null;
+            }
 
-        // Lock the Portal UI
-        function lockPortal() {
-            clearInterval(redirectTimer);
-            keyInput.value = '';
-            portalView.classList.add('hidden');
-            gateView.classList.remove('hidden');
-            showToast('Portal locked. Enrollment key required to re-enter.');
-        }
+            if (isEmbedded) {
+                // Inside Google Sites / iframe: open in a new tab immediately while user gesture is active
+                launchSiteBtn.target = '_blank';
+                launchSiteBtn.rel = 'noopener noreferrer';
 
-        // Verify Student Key Against Registered Routes & Log Attendance
-        async function verifyAndEnter(rawKey, studentName) {
-            try {
-                if (!rawKey || rawKey.trim() === '') {
-                    errorMessage.textContent = 'Please enter the enrollment key provided by your teacher.';
-                    errorBox.classList.remove('hidden');
-                    return;
-                }
-
-                const normalizedInput = rawKey.trim().toUpperCase();
-                const matchedRoute = registeredRoutes.find(r => r.keyCode.trim().toUpperCase() === normalizedInput);
-
-                if (matchedRoute) {
-                    const logEntry = {
-                        studentName: studentName && studentName.trim() ? studentName.trim() : 'Anonymous Learner',
-                        keyCode: matchedRoute.keyCode,
-                        courseLabel: matchedRoute.label || '',
-                        timestamp: Date.now()
-                    };
-
-                    if (isCloudConnected && db && currentUser) {
-                        try {
-                            const logsCol = collection(db, 'artifacts', appId, 'public', 'data', 'access_logs');
-                            await addDoc(logsCol, logEntry);
-                        } catch (logErr) {
-                            console.warn('Could not write cloud attendance log:', logErr);
-                        }
-                    } else {
-                        accessLogs.unshift(logEntry);
-                        renderLogsList();
-                    }
-
-                    unlockPortal(studentName, matchedRoute);
-                    showToast(`Access granted! Redirecting to ${matchedRoute.label}...`);
+                const openedWindow = window.open(destUrl, '_blank', 'noopener,noreferrer');
+                if (openedWindow) {
+                    redirectStatusText.innerHTML = `Opening <strong>${escapeHtml(courseLabel)}</strong> in a new tab. If it didn't appear, click the button below.`;
                 } else {
-                    errorMessage.textContent = 'Invalid enrollment key. Please double-check your spelling or ask your teacher.';
-                    errorBox.classList.remove('hidden');
-                    keyInput.focus();
+                    redirectStatusText.innerHTML = `Access granted for <strong>${escapeHtml(courseLabel)}</strong>! Click the button below to open your learning portal.`;
                 }
-            } catch (err) {
-                console.error('Verification error:', err);
-                errorMessage.textContent = 'An error occurred while verifying your key.';
-                errorBox.classList.remove('hidden');
+            } else {
+                // Standalone GitHub Pages tab: smooth 2-second same-tab redirect
+                launchSiteBtn.target = '_self';
+                launchSiteBtn.removeAttribute('rel');
+
+                let secondsLeft = 2;
+                redirectStatusText.innerHTML = `Redirecting you to <strong>${escapeHtml(courseLabel)}</strong> in <span id="redirect-countdown" class="font-bold text-indigo-600">${secondsLeft}</span> seconds...`;
+
+                redirectTimer = setInterval(() => {
+                    secondsLeft -= 1;
+                    const countdownSpan = document.getElementById('redirect-countdown');
+                    if (secondsLeft > 0) {
+                        if (countdownSpan) countdownSpan.textContent = String(secondsLeft);
+                    } else {
+                        clearInterval(redirectTimer);
+                        redirectTimer = null;
+                        if (countdownSpan) countdownSpan.textContent = '0';
+                        window.location.href = destUrl;
+                    }
+                }, 1000);
             }
         }
 
-        // Student Form Submit
-        enrollmentForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            verifyAndEnter(keyInput.value, nameInput.value);
-        });
+        // Lock Portal & Reset Gate
+        function lockPortal() {
+            if (redirectTimer) {
+                clearInterval(redirectTimer);
+                redirectTimer = null;
+            }
+            portalView.classList.add('hidden');
+            gateView.classList.remove('hidden');
+            keyInput.value = '';
+            hideError();
+            window.scrollTo(0, 0);
+            keyInput.focus();
+        }
 
-        // Toggle password visibility
+        // Toggle Password Visibility
         toggleVisBtn.addEventListener('click', () => {
-            const isPassword = keyInput.type === 'password';
-            keyInput.type = isPassword ? 'text' : 'password';
-            eyeText.textContent = isPassword ? 'Hide' : 'Show';
-            eyeIcon.setAttribute('data-lucide', isPassword ? 'eye-off' : 'eye');
+            const isHidden = keyInput.type === 'password';
+            keyInput.type = isHidden ? 'text' : 'password';
+            eyeText.textContent = isHidden ? 'Hide' : 'Show';
+            eyeIcon.setAttribute('data-lucide', isHidden ? 'eye-off' : 'eye');
             renderIcons();
         });
 
-        // Teacher Modal Open / Close
-        openTeacherTool.addEventListener('click', () => {
-            teacherModal.classList.remove('hidden');
-            adminPasscodeInput.focus();
-        });
-        closeTeacherTool.addEventListener('click', () => teacherModal.classList.add('hidden'));
-        teacherModal.addEventListener('click', (e) => {
-            if (e.target === teacherModal) teacherModal.classList.add('hidden');
+        // Learner Form Submit
+        enrollmentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            hideError();
+
+            const enteredKey = keyInput.value.trim().toUpperCase();
+            const studentName = nameInput.value.trim() || 'Anonymous Learner';
+
+            if (!enteredKey) {
+                showError('Please enter the enrollment key provided by your teacher.');
+                keyInput.focus();
+                return;
+            }
+
+            const matchedRoute = registeredRoutes.find(
+                (r) => (r.keyCode || '').trim().toUpperCase() === enteredKey
+            );
+
+            if (!matchedRoute) {
+                showError('Invalid enrollment key. Please double-check with your teacher and try again.');
+                keyInput.select();
+                return;
+            }
+
+            // Record student attendance log in the background (non-blocking so user-gesture redirect isn't blocked)
+            const logEntry = {
+                studentName,
+                keyCode: matchedRoute.keyCode,
+                courseLabel: matchedRoute.label || 'Learning Portal',
+                timestamp: Date.now()
+            };
+
+            if (isCloudConnected && db && currentUser) {
+                const logsCol = collection(db, 'artifacts', appId, 'public', 'data', 'access_logs');
+                addDoc(logsCol, logEntry).catch((logErr) => {
+                    console.warn("Could not write attendance log to cloud:", logErr);
+                    accessLogs.unshift({ id: `local-${Date.now()}`, ...logEntry });
+                    renderLogsList();
+                });
+            } else {
+                accessLogs.unshift({ id: `local-${Date.now()}`, ...logEntry });
+                renderLogsList();
+            }
+
+            // Unlock and open destination immediately while click gesture is active
+            unlockPortal(studentName, matchedRoute);
         });
 
-        // Unlock Instructor Console
-        function attemptAdminUnlock() {
-            const entered = adminPasscodeInput.value.trim();
-            if (entered.toUpperCase() === INSTRUCTOR_ADMIN_PASSCODE.toUpperCase()) {
+        // Lock Portal Button
+        lockPortalBtn.addEventListener('click', lockPortal);
+
+        // =====================================================================
+        // INSTRUCTOR MODAL & CONSOLE INTERACTIONS
+        // =====================================================================
+        openTeacherTool.addEventListener('click', () => {
+            teacherModal.classList.remove('hidden');
+            adminLockError.classList.add('hidden');
+            if (!adminLockScreen.classList.contains('hidden')) {
+                adminPasscodeInput.value = '';
+                adminPasscodeInput.focus();
+            }
+            renderIcons();
+        });
+
+        closeTeacherTool.addEventListener('click', () => {
+            teacherModal.classList.add('hidden');
+        });
+
+        teacherModal.addEventListener('click', (e) => {
+            if (e.target === teacherModal) {
+                teacherModal.classList.add('hidden');
+            }
+        });
+
+        function tryUnlockAdmin() {
+            const code = adminPasscodeInput.value.trim().toUpperCase();
+            if (code === INSTRUCTOR_ADMIN_PASSCODE.toUpperCase()) {
                 adminLockError.classList.add('hidden');
                 adminLockScreen.classList.add('hidden');
                 adminConsoleBody.classList.remove('hidden');
                 renderRoutesList();
                 renderLogsList();
+                renderIcons();
             } else {
                 adminLockError.classList.remove('hidden');
+                adminPasscodeInput.select();
             }
         }
-        unlockAdminBtn.addEventListener('click', attemptAdminUnlock);
+
+        unlockAdminBtn.addEventListener('click', tryUnlockAdmin);
         adminPasscodeInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                attemptAdminUnlock();
+                tryUnlockAdmin();
             }
         });
 
-        // Console Tabs Switching
-        function switchTab(activeBtn, activePanel) {
-            [tabRoutesBtn, tabLogsBtn, tabCloudBtn].forEach(btn => {
-                btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors';
+        // Tab Switching
+        function switchTab(active) {
+            const tabs = [
+                { id: 'routes', btn: tabRoutesBtn, panel: tabRoutesPanel },
+                { id: 'logs', btn: tabLogsBtn, panel: tabLogsPanel },
+                { id: 'cloud', btn: tabCloudBtn, panel: tabCloudPanel }
+            ];
+            tabs.forEach((t) => {
+                if (t.id === active) {
+                    t.btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-colors cursor-pointer';
+                    t.panel.classList.remove('hidden');
+                } else {
+                    t.btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer';
+                    t.panel.classList.add('hidden');
+                }
             });
-            [tabRoutesPanel, tabLogsPanel, tabCloudPanel].forEach(panel => {
-                panel.classList.add('hidden');
-            });
-            activeBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-colors';
-            activePanel.classList.remove('hidden');
         }
 
-        tabRoutesBtn.addEventListener('click', () => switchTab(tabRoutesBtn, tabRoutesPanel));
-        tabLogsBtn.addEventListener('click', () => switchTab(tabLogsBtn, tabLogsPanel));
-        tabCloudBtn.addEventListener('click', () => switchTab(tabCloudBtn, tabCloudPanel));
+        tabRoutesBtn.addEventListener('click', () => switchTab('routes'));
+        tabLogsBtn.addEventListener('click', () => switchTab('logs'));
+        tabCloudBtn.addEventListener('click', () => switchTab('cloud'));
 
-        // Connect custom Firebase JSON for GitHub Pages
-        connectCustomFirebaseBtn.addEventListener('click', async () => {
-            try {
-                const parsed = JSON.parse(firebaseConfigTextarea.value.trim());
-                await initCloudStorage(parsed);
-                if (isCloudConnected) {
-                    showToast('Connected to Firebase cloud storage!');
-                    switchTab(tabRoutesBtn, tabRoutesPanel);
-                } else {
-                    showToast('Could not connect. Check your Firebase JSON config.');
-                }
-            } catch (e) {
-                showToast('Invalid JSON format. Paste the full Firebase config object.');
-            }
-        });
-
-        // Register New Key + Associated Landing Site
+        // Register New Enrollment Key & Associated Landing Site
         registerRouteForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+
             const label = routeLabelInput.value.trim();
             const keyCode = routeKeyInput.value.trim().toUpperCase();
-            const landingUrl = routeUrlInput.value.trim();
+            let landingUrl = routeUrlInput.value.trim();
 
-            if (!label || !keyCode || !landingUrl) return;
+            if (!label || !keyCode || !landingUrl) {
+                showToast('Please fill in Course Label, Enrollment Key, and Landing Site URL.');
+                return;
+            }
+
+            // Auto-prepend https:// if user omitted protocol
+            if (!/^https?:\/\//i.test(landingUrl)) {
+                landingUrl = 'https://' + landingUrl;
+            }
 
             try {
-                saveRouteBtn.disabled = true;
+                new URL(landingUrl);
+            } catch {
+                showToast('Please enter a valid website URL (e.g., https://sites.google.com/...).');
+                return;
+            }
+
+            saveRouteBtn.disabled = true;
+            routeFormStatus.textContent = 'Saving...';
+
+            try {
                 const keyDocId = await sha256(keyCode);
+                const newRouteData = {
+                    keyCode,
+                    label,
+                    landingUrl,
+                    createdAt: Date.now()
+                };
 
                 if (isCloudConnected && db && currentUser) {
                     const routeDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'enrollment_routes', keyDocId);
-                    await setDoc(routeDocRef, {
-                        keyCode,
-                        label,
-                        landingUrl,
-                        createdAt: Date.now()
-                    });
-                    showToast(`Synced to cloud: "${keyCode}" → ${label}`);
+                    await setDoc(routeDocRef, newRouteData);
+                    showToast(`Saved to cloud: "${keyCode}" → ${label}`);
+                    routeFormStatus.textContent = 'Synced to cloud!';
                 } else {
-                    registeredRoutes = registeredRoutes.filter(r => r.keyCode !== keyCode);
-                    registeredRoutes.unshift({
-                        id: keyDocId,
-                        keyCode,
-                        label,
-                        landingUrl,
-                        createdAt: Date.now()
-                    });
+                    const existingIdx = registeredRoutes.findIndex(r => r.keyCode === keyCode);
+                    if (existingIdx >= 0) {
+                        registeredRoutes[existingIdx] = { id: keyDocId, ...newRouteData };
+                    } else {
+                        registeredRoutes.unshift({ id: keyDocId, ...newRouteData });
+                    }
                     renderRoutesList();
-                    showToast(`Registered "${keyCode}" → ${label}`);
+                    showToast(`Saved for this session: "${keyCode}" → ${label}`);
+                    routeFormStatus.textContent = 'Saved in session (check Cloud Status tab for multi-device sync).';
                 }
 
-                routeLabelInput.value = '';
-                routeKeyInput.value = '';
-                routeUrlInput.value = '';
+                registerRouteForm.reset();
             } catch (err) {
-                console.error('Error registering route:', err);
-                showToast('Failed to register key. Check permissions.');
+                console.error("Save route error:", err);
+                // Graceful fallback so teacher isn't blocked even if Firestore rules need updating
+                const fallbackId = `local-${Date.now()}`;
+                const existingIdx = registeredRoutes.findIndex(r => r.keyCode === keyCode);
+                if (existingIdx >= 0) {
+                    registeredRoutes[existingIdx] = { id: fallbackId, keyCode, label, landingUrl, createdAt: Date.now() };
+                } else {
+                    registeredRoutes.unshift({ id: fallbackId, keyCode, label, landingUrl, createdAt: Date.now() });
+                }
+                renderRoutesList();
+                registerRouteForm.reset();
+                const errCode = err?.code || 'permission-denied';
+                routeFormStatus.textContent = `Cloud write blocked (${errCode}) — check Cloud Status & Rules tab.`;
+                showToast(`Cloud Write Blocked (${errCode}). Saved locally for now.`);
             } finally {
                 saveRouteBtn.disabled = false;
             }
         });
 
-        // Export Student Attendance Logs to CSV
+        // Export Student Access Logs to CSV
         exportCsvBtn.addEventListener('click', () => {
-            if (accessLogs.length === 0) {
-                showToast('No attendance logs to export yet.');
+            if (!accessLogs.length) {
+                showToast('No attendance logs available to export.');
                 return;
             }
-            const headers = ['Student Name', 'Enrollment Key', 'Course Label', 'Timestamp'];
-            const rows = accessLogs.map(l => [
-                `"${(l.studentName || '').replace(/"/g, '""')}"`,
-                `"${(l.keyCode || '').replace(/"/g, '""')}"`,
-                `"${(l.courseLabel || '').replace(/"/g, '""')}"`,
-                `"${l.timestamp ? new Date(l.timestamp).toLocaleString() : ''}"`
+            const headers = ['Student Name', 'Enrollment Key', 'Course Label', 'Date & Time'];
+            const rows = accessLogs.map(log => [
+                `"${(log.studentName || '').replace(/"/g, '""')}"`,
+                `"${(log.keyCode || '').replace(/"/g, '""')}"`,
+                `"${(log.courseLabel || '').replace(/"/g, '""')}"`,
+                `"${log.timestamp ? new Date(log.timestamp).toLocaleString() : ''}"`
             ]);
             const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -847,18 +966,18 @@
             const a = document.createElement('a');
             a.href = url;
             a.download = `student-access-logs-${new Date().toISOString().slice(0, 10)}.csv`;
+            document.body.appendChild(a);
             a.click();
+            document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            showToast('Attendance CSV downloaded!');
+            showToast('Attendance CSV downloaded.');
         });
 
-        // Lock button
-        lockPortalBtn.addEventListener('click', lockPortal);
-
-        // Initialize on Page Load
+        // Initialize on Page Load (No auto-login: always starts fresh at key gate)
         window.addEventListener('DOMContentLoaded', async () => {
             window.scrollTo(0, 0);
             renderIcons();
+            renderRoutesList();
             await initCloudStorage();
         });
     </script>
