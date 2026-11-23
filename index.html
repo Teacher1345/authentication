@@ -266,6 +266,21 @@
             const msgBuffer = new TextEncoder().encode(message.trim());
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Helper: Show custom toast notification
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            if (!toast || !toastMsg) return;
+            toastMsg.textContent = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
         // Unlock the Portal UI and Redirect to Google Sites
         function unlockPortal(studentName) {
             const cleanName = studentName && studentName.trim() !== "" ? studentName.trim() : "Enrolled Learner";
