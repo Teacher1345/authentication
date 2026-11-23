@@ -50,7 +50,7 @@
                             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                                 <i data-lucide="user" class="w-4 h-4"></i>
                             </div>
-                            <input type="text" id="student-name" placeholder="e.g. Maria Clara" 
+                            <input type="text" id="student-name" placeholder="e.g. Juan Dela Cruz" 
                                 class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all">
                         </div>
                     </div>
@@ -175,30 +175,74 @@
     </footer>
 
     <!-- Instructor Key Generator Modal (Hidden by default) -->
-    <div id="teacher-modal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+    <div id="teacher-modal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4 my-8">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div class="flex items-center gap-2">
                     <i data-lucide="key" class="w-5 h-5 text-indigo-600"></i>
-                    <h3 class="font-bold text-slate-900 text-base">Teacher Key Hash Generator</h3>
+                    <h3 class="font-bold text-slate-900 text-base">Teacher Key Manager</h3>
                 </div>
                 <button type="button" id="close-teacher-tool" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
+            
             <p class="text-xs text-slate-600 leading-relaxed">
-                Create a new enrollment key for your class. Copy the generated <strong>SHA-256 Hash</strong> into <code>VALID_KEY_HASHES</code> inside your GitHub <code>index.html</code> file, then give the plain key + site link to your students.
+                Set a new enrollment key below. You can either push the update <strong>directly to GitHub</strong> automatically or download the updated <code>index.html</code> file.
             </p>
-            <div>
-                <label for="new-teacher-key" class="block text-xs font-semibold text-slate-700 mb-1">New Enrollment Key</label>
-                <input type="text" id="new-teacher-key" placeholder="e.g. BSIT-2A-2026" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono uppercase focus:outline-none focus:border-indigo-500">
+
+            <div class="space-y-3">
+                <div>
+                    <label for="new-teacher-key" class="block text-xs font-semibold text-slate-700 mb-1">New Enrollment Key <span class="text-rose-500">*</span></label>
+                    <input type="text" id="new-teacher-key" placeholder="e.g. ARAL-MATH-2026" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono uppercase focus:outline-none focus:border-indigo-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Generated SHA-256 Hash</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="generated-hash" readonly placeholder="Type a key above..." class="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl text-xs font-mono text-slate-600">
+                        <button type="button" id="copy-hash-btn" class="px-3 py-2 bg-slate-700 hover:bg-slate-800 text-white text-xs font-medium rounded-xl shrink-0">
+                            Copy
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Generated SHA-256 Hash (Paste in GitHub Code)</label>
-                <div class="flex gap-2">
-                    <input type="text" id="generated-hash" readonly placeholder="Type a key above..." class="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl text-xs font-mono text-slate-600">
-                    <button type="button" id="copy-hash-btn" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium rounded-xl shrink-0">
-                        Copy
+
+            <!-- Automatic GitHub Sync Section -->
+            <div class="pt-3 border-t border-slate-100 space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                        <i data-lucide="github" class="w-4 h-4 text-slate-700"></i>
+                        Auto-Register to GitHub <code>index.html</code>
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label for="gh-repo" class="block text-[11px] font-medium text-slate-600 mb-1">Owner/Repo</label>
+                        <input type="text" id="gh-repo" placeholder="username/class-portal" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-mono focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="gh-branch" class="block text-[11px] font-medium text-slate-600 mb-1">Branch</label>
+                        <input type="text" id="gh-branch" value="main" placeholder="main" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-mono focus:outline-none focus:border-indigo-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="gh-token" class="block text-[11px] font-medium text-slate-600 mb-1">GitHub Personal Access Token (<code>repo</code> scope)</label>
+                    <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-mono focus:outline-none focus:border-indigo-500">
+                </div>
+
+                <div id="gh-status" class="hidden p-2.5 rounded-xl text-xs"></div>
+
+                <div class="flex flex-col sm:flex-row gap-2 pt-1">
+                    <button type="button" id="push-github-btn" class="flex-1 py-2.5 px-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center gap-1.5 transition-colors">
+                        <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+                        <span>Save Directly to GitHub</span>
+                    </button>
+                    <button type="button" id="download-html-btn" class="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl flex items-center justify-center gap-1.5 transition-colors">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                        <span>Download index.html</span>
                     </button>
                 </div>
             </div>
@@ -225,14 +269,12 @@
         const TARGET_PORTAL_URL = "https://sites.google.com/deped.gov.ph/ihsg10/aral-math";
 
         /**
-         * Default Key is: CLASS2026
-         * Use the "Instructor Key Setup" link in the footer to generate new SHA-256 hashes.
+         * Active Enrollment Key: ARALMATHB2
+         * Use the "Instructor Key Setup" link in the footer to generate new SHA-256 hashes if you rotate keys later.
          */
         const VALID_KEY_HASHES = [
-            // SHA-256 hash for "CLASS2026"
-            "89f4e7469f2c71436e54b1b1223209117f013903018b35e78f828a991c7c1f9c",
-            // SHA-256 hash for "SECTION-A" (You can support multiple keys for different class sections!)
-            "4c529a1f1b2416f18915c956b17497e05897d22a1d32c8e0f87729b7a2c902a1"
+            // SHA-256 hash for "ARALMATHB2"
+            "e11a68c53f9f6356c260a912a9a7d95342764a5d6202c3d2a493e5c40e1f2d9b"
         ];
 
         // DOM Elements
@@ -260,6 +302,12 @@
         const newTeacherKeyInput = document.getElementById('new-teacher-key');
         const generatedHashInput = document.getElementById('generated-hash');
         const copyHashBtn = document.getElementById('copy-hash-btn');
+        const ghRepoInput = document.getElementById('gh-repo');
+        const ghBranchInput = document.getElementById('gh-branch');
+        const ghTokenInput = document.getElementById('gh-token');
+        const ghStatus = document.getElementById('gh-status');
+        const pushGithubBtn = document.getElementById('push-github-btn');
+        const downloadHtmlBtn = document.getElementById('download-html-btn');
 
         // Helper: Convert plain text string to SHA-256 Hex String
         async function sha256(message) {
@@ -333,14 +381,15 @@
                 }
 
                 // Hash the input and compare (case-insensitive by converting to uppercase)
-                const hashedInput = await sha256(rawKey.trim().toUpperCase());
+                const normalizedInput = rawKey.trim().toUpperCase();
+                const hashedInput = await sha256(normalizedInput);
                 
-                // Fallback direct check for default key in case subtle crypto is restricted in non-HTTPS local preview
-                const isDefaultDirect = rawKey.trim().toUpperCase() === 'CLASS2026';
+                // Direct match check for "ARALMATHB2" alongside SHA-256 verification
+                const isConfiguredKey = normalizedInput === 'ARALMATHB2';
 
-                if (VALID_KEY_HASHES.includes(hashedInput) || isDefaultDirect) {
+                if (VALID_KEY_HASHES.includes(hashedInput) || isConfiguredKey) {
                     unlockPortal(studentName);
-                    showToast('Access granted! Welcome to the class portal.');
+                    showToast('Access granted! Redirecting to ARAL-Math...');
                 } else {
                     errorMessage.textContent = 'Invalid enrollment key. Please double-check your spelling or ask your teacher.';
                     errorBox.classList.remove('hidden');
@@ -389,6 +438,116 @@
             generatedHashInput.select();
             document.execCommand('copy');
             showToast('SHA-256 hash copied to clipboard!');
+        });
+
+        // Helper: Build updated HTML source replacing the VALID_KEY_HASHES block
+        function buildUpdatedHtmlSource(sourceHtml, newHash) {
+            const replacementBlock = `/* KEYS_START */\n        const VALID_KEY_HASHES = [\n            "${newHash}"\n        ];\n        /* KEYS_END */`;
+            return sourceHtml.replace(/\/\* KEYS_START \*\/[\s\S]*?\/\* KEYS_END \*\//, replacementBlock);
+        }
+
+        // Download updated index.html file directly
+        downloadHtmlBtn.addEventListener('click', async () => {
+            const rawKey = newTeacherKeyInput.value.trim().toUpperCase();
+            if (!rawKey) {
+                showToast('Please enter a new enrollment key first.');
+                return;
+            }
+            const newHash = await sha256(rawKey);
+            const currentDocHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            const updatedHtml = buildUpdatedHtmlSource(currentDocHtml, newHash);
+
+            const blob = new Blob([updatedHtml], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'index.html';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast(`Downloaded index.html with key "${rawKey}" registered!`);
+        });
+
+        // Automatically push updated index.html to GitHub via GitHub REST API
+        pushGithubBtn.addEventListener('click', async () => {
+            const rawKey = newTeacherKeyInput.value.trim().toUpperCase();
+            const repo = ghRepoInput.value.trim();
+            const branch = ghBranchInput.value.trim() || 'main';
+            const token = ghTokenInput.value.trim();
+
+            if (!rawKey || !repo || !token) {
+                ghStatus.textContent = 'Please fill in the New Enrollment Key, Owner/Repo, and GitHub Token.';
+                ghStatus.className = 'p-2.5 rounded-xl text-xs bg-rose-50 text-rose-700 border border-rose-200 block';
+                return;
+            }
+
+            try {
+                pushGithubBtn.disabled = true;
+                ghStatus.textContent = 'Connecting to GitHub and updating index.html...';
+                ghStatus.className = 'p-2.5 rounded-xl text-xs bg-indigo-50 text-indigo-700 border border-indigo-200 block';
+
+                const newHash = await sha256(rawKey);
+                const apiUrl = `https://api.github.com/repos/${repo}/contents/index.html`;
+
+                // 1. Fetch existing index.html from GitHub to get its SHA and current content
+                const getRes = await fetch(`${apiUrl}?ref=${encodeURIComponent(branch)}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/vnd.github+json'
+                    }
+                });
+
+                if (!getRes.ok) {
+                    throw new Error(`Could not fetch index.html (${getRes.status}). Check repo name, branch, and token.`);
+                }
+
+                const fileData = await getRes.json();
+                // Decode UTF-8 base64 content safely
+                const binaryStr = atob(fileData.content.replace(/\n/g, ''));
+                const bytes = Uint8Array.from(binaryStr, c => c.charCodeAt(0));
+                const existingHtml = new TextDecoder().decode(bytes);
+
+                // 2. Replace the key hash inside index.html
+                const updatedHtml = buildUpdatedHtmlSource(existingHtml, newHash);
+
+                // Encode UTF-8 string back to base64
+                const updatedBytes = new TextEncoder().encode(updatedHtml);
+                let updatedBinary = '';
+                updatedBytes.forEach(b => updatedBinary += String.fromCharCode(b));
+                const encodedContent = btoa(updatedBinary);
+
+                // 3. Commit updated index.html back to GitHub
+                const putRes = await fetch(apiUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/vnd.github+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: 'Update student enrollment key via Teacher Portal',
+                        content: encodedContent,
+                        sha: fileData.sha,
+                        branch: branch
+                    })
+                });
+
+                if (!putRes.ok) {
+                    throw new Error(`Failed to commit update (${putRes.status}). Ensure token has Contents read/write permission.`);
+                }
+
+                // Also update active in-memory key immediately
+                VALID_KEY_HASHES.length = 0;
+                VALID_KEY_HASHES.push(newHash);
+
+                ghStatus.textContent = `Success! Key "${rawKey}" is now registered in ${repo}/index.html. GitHub Pages will reflect it in ~60 seconds.`;
+                ghStatus.className = 'p-2.5 rounded-xl text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 block';
+                showToast('GitHub index.html updated automatically!');
+            } catch (err) {
+                ghStatus.textContent = err.message;
+                ghStatus.className = 'p-2.5 rounded-xl text-xs bg-rose-50 text-rose-700 border border-rose-200 block';
+            } finally {
+                pushGithubBtn.disabled = false;
+            }
         });
 
         // Lock button
