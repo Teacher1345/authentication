@@ -34,12 +34,12 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between text-slate-800 bg-gradient-to-br from-slate-50 via-indigo-50/40 to-slate-100 selection:bg-indigo-600 selection:text-white">
+<body class="min-h-screen flex flex-col justify-start text-slate-800 bg-gradient-to-br from-slate-50 via-indigo-50/40 to-slate-100 selection:bg-indigo-600 selection:text-white">
 
     <!-- ===================================================================== -->
     <!-- 1. ENROLLMENT KEY GATE (Visible by default until valid key entered)   -->
     <!-- ===================================================================== -->
-    <main id="gate-view" class="flex-1 flex items-start justify-center pt-6 sm:pt-12 pb-8 px-4 sm:px-6">
+    <main id="gate-view" class="w-full flex items-start justify-center pt-4 sm:pt-6 pb-8 px-4 sm:px-6">
         <div class="w-full max-w-md animate-gate">
             <!-- Top Emblem / Header -->
             <div class="text-center mb-6">
@@ -200,7 +200,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="py-5 px-4 text-center text-xs text-slate-400 border-t border-slate-200/60 bg-white/50 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
+    <footer class="mt-auto py-5 px-4 text-center text-xs text-slate-400 border-t border-slate-200/60 bg-white/50 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
         <p>Cloud-Synced Access Portal • Restricted Learning Environment</p>
         <span class="hidden sm:inline text-slate-300">•</span>
         <button type="button" id="open-teacher-tool" class="text-slate-400 hover:text-indigo-600 underline underline-offset-2 transition-colors">
@@ -859,6 +859,7 @@
 
         // Initialize on Page Load
         window.addEventListener('DOMContentLoaded', async () => {
+            window.scrollTo(0, 0);
             renderIcons();
             await initCloudStorage();
             if (sessionStorage.getItem('portal_unlocked') === 'true') {
