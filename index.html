@@ -3,93 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClassPortal | Student Access Gate</title>
+    <title>Student Learning Portal — Enrollment Gate</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                }
-            }
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
         }
-    </script>
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.98) translateY(8px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .animate-gate {
+            animation: fadeInScale 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+        .animate-shake {
+            animation: shake 0.35s ease-in-out;
+        }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-indigo-100 selection:text-indigo-900">
+<body class="min-h-screen flex flex-col justify-between text-slate-800 bg-gradient-to-br from-slate-50 via-indigo-50/40 to-slate-100 selection:bg-indigo-600 selection:text-white">
 
     <!-- ===================================================================== -->
-    <!-- 1. ENROLLMENT KEY GATE (VISIBLE BY DEFAULT)                           -->
+    <!-- 1. ENROLLMENT KEY GATE (Visible by default until valid key entered)   -->
     <!-- ===================================================================== -->
-    <main id="gate-view" class="flex-grow flex items-center justify-center p-4 sm:p-6">
-        <div class="w-full max-w-md bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-100 overflow-hidden transition-all duration-300">
-            
-            <!-- Top Decorative Banner -->
-            <div class="bg-gradient-to-r from-indigo-600 to-blue-600 p-6 sm:p-8 text-white text-center relative overflow-hidden">
-                <div class="w-14 h-14 bg-white/15 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-inner border border-white/20">
-                    <i data-lucide="key-round" class="w-7 h-7 text-white"></i>
+    <main id="gate-view" class="flex-1 flex items-center justify-center p-4 sm:p-6">
+        <div class="w-full max-w-md animate-gate">
+            <!-- Top Emblem / Header -->
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 mb-4">
+                    <i data-lucide="key-round" class="w-7 h-7"></i>
                 </div>
-                <h1 class="text-2xl font-bold tracking-tight">Student Learning Portal</h1>
-                <p class="text-indigo-100 text-sm mt-1.5">Enter the enrollment key provided by your instructor to access course materials.</p>
+                <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+                    Class Portal Access
+                </h1>
+                <p class="text-sm text-slate-500 mt-1.5 max-w-xs mx-auto">
+                    This learning portal is restricted. Enter the enrollment key given by your teacher to continue.
+                </p>
             </div>
 
-            <!-- Form Section -->
-            <div class="p-6 sm:p-8">
+            <!-- Login / Key Card -->
+            <div class="bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-xl shadow-slate-200/50 p-6 sm:p-8">
                 <form id="enrollment-form" class="space-y-5" novalidate>
+                    <!-- Optional Student Name for Attendance & Personalization -->
                     <div>
-                        <label for="student-name" class="block text-sm font-medium text-slate-700 mb-1.5">Your Full Name <span class="text-slate-400 font-normal">(Optional)</span></label>
+                        <label for="student-name" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+                            Your Full Name <span class="text-slate-400 font-normal normal-case">(Optional)</span>
+                        </label>
                         <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
                                 <i data-lucide="user" class="w-4 h-4"></i>
-                            </div>
-                            <input type="text" id="student-name" placeholder="e.g. Juan Dela Cruz" 
-                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all">
+                            </span>
+                            <input
+                                type="text"
+                                id="student-name"
+                                placeholder="e.g. Alex Rivera"
+                                autocomplete="name"
+                                class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all"
+                            >
                         </div>
                     </div>
 
+                    <!-- Enrollment Key Input -->
                     <div>
                         <div class="flex items-center justify-between mb-1.5">
-                            <label for="enrollment-key" class="block text-sm font-medium text-slate-700">Enrollment Key <span class="text-rose-500">*</span></label>
-                            <button type="button" id="toggle-visibility" class="text-xs text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1 focus:outline-none">
+                            <label for="enrollment-key" class="block text-xs font-semibold uppercase tracking-wider text-slate-700">
+                                Teacher Enrollment Key <span class="text-rose-500">*</span>
+                            </label>
+                            <button type="button" id="toggle-visibility" class="text-xs font-medium text-indigo-600 hover:text-indigo-700 flex items-center gap-1 focus:outline-none">
                                 <i data-lucide="eye" id="eye-icon" class="w-3.5 h-3.5"></i>
                                 <span id="eye-text">Show</span>
                             </button>
                         </div>
                         <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
                                 <i data-lucide="lock" class="w-4 h-4"></i>
-                            </div>
-                            <input type="password" id="enrollment-key" required placeholder="Enter class key..." 
-                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all">
+                            </span>
+                            <input
+                                type="password"
+                                id="enrollment-key"
+                                required
+                                placeholder="Enter enrollment key..."
+                                autocomplete="off"
+                                class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono tracking-wider text-slate-900 placeholder:font-sans placeholder:tracking-normal placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all"
+                            >
                         </div>
                     </div>
 
-                    <!-- Error Message Box (Hidden by default) -->
-                    <div id="error-box" class="hidden p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2.5 animate-pulse">
-                        <i data-lucide="alert-circle" class="w-4 h-4 text-rose-600 shrink-0 mt-0.5"></i>
+                    <!-- Error Message Box -->
+                    <div id="error-box" class="hidden rounded-xl bg-rose-50 border border-rose-200 p-3 flex items-start gap-2.5 text-rose-700 text-xs">
+                        <i data-lucide="alert-circle" class="w-4 h-4 text-rose-500 shrink-0 mt-0.5"></i>
                         <span id="error-message">Invalid enrollment key. Please check with your teacher and try again.</span>
                     </div>
 
-                    <button type="submit" id="submit-btn"
-                        class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-medium text-sm rounded-xl shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600">
-                        <span>Verify Key & Enter Site</span>
+                    <!-- Submit Button -->
+                    <button
+                        type="submit"
+                        id="submit-btn"
+                        class="w-full py-3.5 px-4 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold text-sm rounded-xl shadow-md shadow-indigo-600/20 hover:shadow-lg hover:shadow-indigo-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                        <span>Unlock &amp; Enter Portal</span>
                         <i data-lucide="arrow-right" class="w-4 h-4"></i>
                     </button>
                 </form>
 
-                <!-- Restricted Access Notice -->
+                <!-- Restricted Notice -->
                 <div class="mt-6 pt-5 border-t border-slate-100 text-center">
-                    <p class="text-xs text-slate-500 leading-relaxed flex items-center justify-center gap-1.5">
-                        <i data-lucide="shield-check" class="w-4 h-4 text-indigo-500 shrink-0"></i>
-                        <span>Private class link. Need a key? Contact your instructor directly.</span>
+                    <p class="text-xs text-slate-500 leading-relaxed">
+                        Don't have an enrollment key? Contact your instructor directly to request access for this term.
                     </p>
                 </div>
             </div>
@@ -97,18 +130,18 @@
     </main>
 
     <!-- ===================================================================== -->
-    <!-- 2. PROTECTED COURSE DASHBOARD (HIDDEN UNTIL UNLOCKED)                 -->
+    <!-- 2. UNLOCKED REDIRECT / PORTAL LAUNCHER (Hidden until key is verified) -->
     <!-- ===================================================================== -->
-    <div id="portal-view" class="hidden flex-grow flex flex-col">
+    <div id="portal-view" class="hidden flex-1 flex flex-col">
         <!-- Top Navigation Bar -->
         <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold shadow-sm">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-xs">
                         <i data-lucide="graduation-cap" class="w-5 h-5"></i>
                     </div>
                     <div>
-                        <span class="font-bold text-slate-900 tracking-tight block leading-none">ARAL-Math Grade 10</span>
+                        <span class="font-bold text-slate-900 tracking-tight block leading-none">Student Learning Portal</span>
                         <span class="text-[11px] text-emerald-600 font-medium flex items-center gap-1 mt-0.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Access Verified
                         </span>
@@ -116,134 +149,177 @@
                 </div>
 
                 <div class="flex items-center gap-3 sm:gap-4">
-                    <span id="welcome-badge" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 bg-slate-100 px-3 py-1.5 rounded-full">
-                        <i data-lucide="user-check" class="w-3.5 h-3.5 text-indigo-600"></i>
-                        <span id="display-student-name">Student</span>
+                    <span class="hidden sm:inline-block text-xs text-slate-500">
+                        Welcome, <strong id="display-student-name" class="text-slate-800">Learner</strong>
                     </span>
-                    <button id="lock-portal-btn" class="text-xs font-medium text-slate-600 hover:text-rose-600 bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-200 px-3 py-2 rounded-xl flex items-center gap-1.5 transition-colors">
+                    <button
+                        type="button"
+                        id="lock-portal-btn"
+                        class="px-3.5 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer"
+                        title="Lock portal and return to key gate"
+                    >
                         <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
-                        <span>Lock / Exit</span>
+                        <span>Lock Portal</span>
                     </button>
                 </div>
             </div>
         </header>
 
-        <!-- Main Course Content -->
-        <div class="max-w-3xl mx-auto w-full px-4 sm:px-6 py-12 flex-grow flex items-center justify-center">
-            
-            <!-- Redirect & Launch Card -->
-            <div class="w-full bg-white rounded-2xl border border-slate-200 p-8 sm:p-10 text-center shadow-xl shadow-slate-200/50 space-y-6">
-                <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto">
-                    <i data-lucide="check-circle-2" class="w-9 h-9"></i>
+        <!-- Redirect Confirmation Card -->
+        <div class="flex-1 flex items-center justify-center p-4 sm:p-6">
+            <div class="w-full max-w-lg bg-white border border-slate-200/80 rounded-2xl shadow-xl shadow-slate-200/50 p-6 sm:p-10 text-center space-y-5 animate-gate">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 mx-auto">
+                    <i data-lucide="check-circle-2" class="w-8 h-8"></i>
                 </div>
-                
+
                 <div class="space-y-2">
-                    <span class="inline-block px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold">
-                        Enrollment Key Verified
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold">
+                        <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Enrollment Key Verified
                     </span>
                     <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
                         Welcome, <span id="hero-student-name" class="text-indigo-600">Learner</span>!
                     </h2>
                     <p class="text-slate-600 text-sm sm:text-base max-w-md mx-auto leading-relaxed">
-                        Redirecting you to the official <strong>ARAL-Math Grade 10</strong> learning site in <span id="redirect-countdown" class="font-bold text-indigo-600">3</span> seconds...
+                        Redirecting you to <strong id="hero-course-label">your assigned learning portal</strong> in <span id="redirect-countdown" class="font-bold text-indigo-600">3</span> seconds...
                     </p>
                 </div>
 
                 <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
                     <a id="launch-site-btn" href="https://sites.google.com/deped.gov.ph/ihsg10/aral-math"
                         class="w-full sm:w-auto px-6 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-xl shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2 transition-all">
-                        <span>Enter ARAL-Math Portal Now</span>
+                        <span>Enter Learning Portal Now</span>
                         <i data-lucide="external-link" class="w-4 h-4"></i>
                     </a>
                 </div>
 
                 <p class="text-xs text-slate-400 pt-2">
-                    Destination: <span class="font-mono text-slate-500 break-all">sites.google.com/deped.gov.ph/ihsg10/aral-math</span>
+                    Destination: <span id="hero-destination-url" class="font-mono text-slate-500 break-all">sites.google.com/deped.gov.ph/ihsg10/aral-math</span>
                 </p>
             </div>
-
         </div>
     </div>
 
     <!-- Footer -->
     <footer class="py-5 px-4 text-center text-xs text-slate-400 border-t border-slate-200/60 bg-white/50 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
-        <p>Hosted on GitHub Pages • Restricted Learning Environment</p>
+        <p>Cloud-Synced Access Portal • Restricted Learning Environment</p>
         <span class="hidden sm:inline text-slate-300">•</span>
         <button type="button" id="open-teacher-tool" class="text-slate-400 hover:text-indigo-600 underline underline-offset-2 transition-colors">
-            Instructor Key Setup
+            Instructor Key &amp; Attendance Manager
         </button>
     </footer>
 
-    <!-- Instructor Key Generator Modal (Hidden by default) -->
-    <div id="teacher-modal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4 my-8">
+    <!-- Instructor Key & Attendance Manager Modal (Hidden by default) -->
+    <div id="teacher-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 space-y-5 my-8">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="key" class="w-5 h-5 text-indigo-600"></i>
-                    <h3 class="font-bold text-slate-900 text-base">Teacher Key Manager</h3>
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                        <i data-lucide="shield" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-base leading-tight">Instructor Portal Manager</h3>
+                        <p id="storage-mode-subtitle" class="text-[11px] text-slate-500">Checking storage connection...</p>
+                    </div>
                 </div>
                 <button type="button" id="close-teacher-tool" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-            
-            <p class="text-xs text-slate-600 leading-relaxed">
-                Set a new enrollment key below. You can either push the update <strong>directly to GitHub</strong> automatically or download the updated <code>index.html</code> file.
-            </p>
 
-            <div class="space-y-3">
-                <div>
-                    <label for="new-teacher-key" class="block text-xs font-semibold text-slate-700 mb-1">New Enrollment Key <span class="text-rose-500">*</span></label>
-                    <input type="text" id="new-teacher-key" placeholder="e.g. ARAL-MATH-2026" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono uppercase focus:outline-none focus:border-indigo-500">
+            <!-- Admin Passcode Lock (Protects Teacher Console) -->
+            <div id="admin-lock-screen" class="space-y-4 py-2">
+                <div class="p-3.5 rounded-xl bg-indigo-50/70 border border-indigo-100 text-xs text-indigo-900 leading-relaxed">
+                    Enter your <strong>Instructor Admin Passcode</strong> to register new enrollment keys, assign landing sites, or view student entry logs.
                 </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Generated SHA-256 Hash</label>
-                    <div class="flex gap-2">
-                        <input type="text" id="generated-hash" readonly placeholder="Type a key above..." class="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl text-xs font-mono text-slate-600">
-                        <button type="button" id="copy-hash-btn" class="px-3 py-2 bg-slate-700 hover:bg-slate-800 text-white text-xs font-medium rounded-xl shrink-0">
-                            Copy
-                        </button>
-                    </div>
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <input type="password" id="admin-passcode-input" placeholder="Enter instructor passcode..." class="flex-1 px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500">
+                    <button type="button" id="unlock-admin-btn" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl transition-colors shrink-0">
+                        Unlock Console
+                    </button>
                 </div>
+                <p id="admin-lock-error" class="hidden text-xs text-rose-600 font-medium">Incorrect instructor passcode.</p>
             </div>
 
-            <!-- Automatic GitHub Sync Section -->
-            <div class="pt-3 border-t border-slate-100 space-y-3">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                        <i data-lucide="github" class="w-4 h-4 text-slate-700"></i>
-                        Auto-Register to GitHub <code>index.html</code>
-                    </span>
+            <!-- Admin Console Content (Hidden until passcode verified) -->
+            <div id="admin-console-body" class="hidden space-y-5">
+                <!-- Tabs -->
+                <div class="flex flex-wrap gap-2 border-b border-slate-100 pb-2">
+                    <button type="button" id="tab-routes-btn" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-colors">
+                        Enrollment Keys &amp; Sites
+                    </button>
+                    <button type="button" id="tab-logs-btn" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">
+                        Student Access Logs (<span id="log-count-badge">0</span>)
+                    </button>
+                    <button type="button" id="tab-cloud-btn" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">
+                        GitHub / Cloud Setup
+                    </button>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label for="gh-repo" class="block text-[11px] font-medium text-slate-600 mb-1">Owner/Repo</label>
-                        <input type="text" id="gh-repo" placeholder="username/class-portal" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-mono focus:outline-none focus:border-indigo-500">
+                <!-- TAB 1: KEYS & LANDING SITES -->
+                <div id="tab-routes-panel" class="space-y-4">
+                    <form id="register-route-form" class="grid grid-cols-1 sm:grid-cols-12 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200/80">
+                        <div class="sm:col-span-4">
+                            <label class="block text-[11px] font-semibold text-slate-700 mb-1">Course / Section Label</label>
+                            <input type="text" id="route-label" required placeholder="e.g. ARAL-Math G10" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div class="sm:col-span-3">
+                            <label class="block text-[11px] font-semibold text-slate-700 mb-1">Enrollment Key</label>
+                            <input type="text" id="route-key" required placeholder="e.g. ARALMATHB2" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs font-mono uppercase focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div class="sm:col-span-5">
+                            <label class="block text-[11px] font-semibold text-slate-700 mb-1">Associated Landing Site URL</label>
+                            <input type="url" id="route-url" required placeholder="https://sites.google.com/..." class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs font-mono focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div class="sm:col-span-12 flex justify-end pt-1">
+                            <button type="submit" id="save-route-btn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 shadow-xs transition-colors">
+                                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                                <span>Register Key &amp; Landing Site</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Active Keys List -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Registered Keys &amp; Destinations</h4>
+                            <span id="cloud-sync-indicator" class="text-[11px] text-emerald-600 font-medium flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
+                            </span>
+                        </div>
+                        <div id="routes-list" class="max-h-56 overflow-y-auto divide-y divide-slate-100 border border-slate-200 rounded-xl bg-white">
+                            <div class="p-4 text-center text-xs text-slate-400">Loading registered keys...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: STUDENT ACCESS LOGS -->
+                <div id="tab-logs-panel" class="hidden space-y-3">
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs text-slate-500">Real-time log of learners who unlocked the portal.</p>
+                        <button type="button" id="export-csv-btn" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-medium rounded-lg flex items-center gap-1.5">
+                            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                            <span>Export CSV</span>
+                        </button>
+                    </div>
+                    <div id="logs-list" class="max-h-64 overflow-y-auto divide-y divide-slate-100 border border-slate-200 rounded-xl bg-white">
+                        <div class="p-4 text-center text-xs text-slate-400">No student logins recorded yet.</div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: GITHUB PAGES CLOUD CONFIG -->
+                <div id="tab-cloud-panel" class="hidden space-y-3 text-xs text-slate-600">
+                    <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 leading-relaxed">
+                        <strong>Hosting on GitHub Pages?</strong> GitHub Pages serves static HTML files, so to sync keys &amp; logs across all student devices, paste your free Firebase Web App config object below (or hardcode it into <code>GITHUB_FIREBASE_CONFIG</code> in <code>index.html</code>).
                     </div>
                     <div>
-                        <label for="gh-branch" class="block text-[11px] font-medium text-slate-600 mb-1">Branch</label>
-                        <input type="text" id="gh-branch" value="main" placeholder="main" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-mono focus:outline-none focus:border-indigo-500">
+                        <label class="block font-semibold text-slate-700 mb-1">Firebase Config JSON (Optional for GitHub Pages)</label>
+                        <textarea id="firebase-config-textarea" rows="4" placeholder='{"apiKey":"...","authDomain":"...","projectId":"..."}' class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-[11px] focus:outline-none focus:border-indigo-500"></textarea>
                     </div>
-                </div>
-
-                <div>
-                    <label for="gh-token" class="block text-[11px] font-medium text-slate-600 mb-1">GitHub Personal Access Token (<code>repo</code> scope)</label>
-                    <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-mono focus:outline-none focus:border-indigo-500">
-                </div>
-
-                <div id="gh-status" class="hidden p-2.5 rounded-xl text-xs"></div>
-
-                <div class="flex flex-col sm:flex-row gap-2 pt-1">
-                    <button type="button" id="push-github-btn" class="flex-1 py-2.5 px-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl flex items-center justify-center gap-1.5 transition-colors">
-                        <i data-lucide="upload-cloud" class="w-4 h-4"></i>
-                        <span>Save Directly to GitHub</span>
-                    </button>
-                    <button type="button" id="download-html-btn" class="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl flex items-center justify-center gap-1.5 transition-colors">
-                        <i data-lucide="download" class="w-4 h-4"></i>
-                        <span>Download index.html</span>
-                    </button>
+                    <div class="flex justify-end">
+                        <button type="button" id="connect-custom-firebase-btn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl">
+                            Connect Cloud Database
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -256,26 +332,64 @@
     </div>
 
     <!-- ===================================================================== -->
-    <!-- JAVASCRIPT LOGIC (SHA-256 VERIFICATION & SESSION MANAGEMENT)          -->
+    <!-- CLOUD STORAGE & VERIFICATION LOGIC (MODULE SCRIPT)                    -->
     <!-- ===================================================================== -->
-    <script>
-        // Initialize Lucide Icons
-        lucide.createIcons();
+    <script type="module">
+        import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, deleteDoc, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Safe helper to render Lucide Icons if loaded
+        function renderIcons() {
+            if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                window.lucide.createIcons();
+            }
+        }
+        renderIcons();
 
         /**
-         * CONFIGURATION FOR THE TEACHER:
-         * Target Landing Portal URL (Google Sites)
+         * Embedded Firebase Web App Config for GitHub Pages live cloud sync
          */
-        const TARGET_PORTAL_URL = "https://sites.google.com/deped.gov.ph/ihsg10/aral-math";
+        const GITHUB_FIREBASE_CONFIG = {
+            apiKey: "AIzaSyAGVp-o03KV1N3jUsdwP3NyVCOPGAjOKBE",
+            authDomain: "authentication-2b419.firebaseapp.com",
+            projectId: "authentication-2b419",
+            storageBucket: "authentication-2b419.firebasestorage.app",
+            messagingSenderId: "396266980346",
+            appId: "1:396266980346:web:db002b2fa6e3c076589a43"
+        };
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'aral-math-portal';
+        let activeFirebaseConfig = typeof __firebase_config !== 'undefined'
+            ? JSON.parse(__firebase_config)
+            : GITHUB_FIREBASE_CONFIG;
+
+        let db = null;
+        let auth = null;
+        let currentUser = null;
+        let isCloudConnected = false;
 
         /**
-         * Active Enrollment Key: ARALMATHB2
-         * Use the "Instructor Key Setup" link in the footer to generate new SHA-256 hashes if you rotate keys later.
+         * Default Instructor Admin Passcode
          */
-        const VALID_KEY_HASHES = [
-            // SHA-256 hash for "ARALMATHB2"
-            "e11a68c53f9f6356c260a912a9a7d95342764a5d6202c3d2a493e5c40e1f2d9b"
+        const INSTRUCTOR_ADMIN_PASSCODE = "TEACHER2026";
+
+        /**
+         * Default Route (ARALMATHB2 -> ARAL-Math Google Site)
+         */
+        const DEFAULT_FALLBACK_ROUTES = [
+            {
+                id: "default-aralmathb2",
+                keyCode: "ARALMATHB2",
+                label: "ARAL-Math Grade 10",
+                landingUrl: "https://sites.google.com/deped.gov.ph/ihsg10/aral-math",
+                createdAt: Date.now()
+            }
         ];
+
+        let registeredRoutes = [...DEFAULT_FALLBACK_ROUTES];
+        let accessLogs = [];
+        let redirectTimer = null;
 
         // DOM Elements
         const gateView = document.getElementById('gate-view');
@@ -291,31 +405,40 @@
         const lockPortalBtn = document.getElementById('lock-portal-btn');
         const displayStudentName = document.getElementById('display-student-name');
         const heroStudentName = document.getElementById('hero-student-name');
+        const heroCourseLabel = document.getElementById('hero-course-label');
+        const heroDestinationUrl = document.getElementById('hero-destination-url');
         const redirectCountdownEl = document.getElementById('redirect-countdown');
         const launchSiteBtn = document.getElementById('launch-site-btn');
-        let redirectTimer = null;
 
-        // Teacher Modal Elements
+        // Teacher Console Elements
         const teacherModal = document.getElementById('teacher-modal');
         const openTeacherTool = document.getElementById('open-teacher-tool');
         const closeTeacherTool = document.getElementById('close-teacher-tool');
-        const newTeacherKeyInput = document.getElementById('new-teacher-key');
-        const generatedHashInput = document.getElementById('generated-hash');
-        const copyHashBtn = document.getElementById('copy-hash-btn');
-        const ghRepoInput = document.getElementById('gh-repo');
-        const ghBranchInput = document.getElementById('gh-branch');
-        const ghTokenInput = document.getElementById('gh-token');
-        const ghStatus = document.getElementById('gh-status');
-        const pushGithubBtn = document.getElementById('push-github-btn');
-        const downloadHtmlBtn = document.getElementById('download-html-btn');
+        const storageModeSubtitle = document.getElementById('storage-mode-subtitle');
+        const adminLockScreen = document.getElementById('admin-lock-screen');
+        const adminPasscodeInput = document.getElementById('admin-passcode-input');
+        const unlockAdminBtn = document.getElementById('unlock-admin-btn');
+        const adminLockError = document.getElementById('admin-lock-error');
+        const adminConsoleBody = document.getElementById('admin-console-body');
 
-        // Helper: Convert plain text string to SHA-256 Hex String
-        async function sha256(message) {
-            const msgBuffer = new TextEncoder().encode(message.trim());
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
+        const tabRoutesBtn = document.getElementById('tab-routes-btn');
+        const tabLogsBtn = document.getElementById('tab-logs-btn');
+        const tabCloudBtn = document.getElementById('tab-cloud-btn');
+        const tabRoutesPanel = document.getElementById('tab-routes-panel');
+        const tabLogsPanel = document.getElementById('tab-logs-panel');
+        const tabCloudPanel = document.getElementById('tab-cloud-panel');
+
+        const registerRouteForm = document.getElementById('register-route-form');
+        const routeLabelInput = document.getElementById('route-label');
+        const routeKeyInput = document.getElementById('route-key');
+        const routeUrlInput = document.getElementById('route-url');
+        const saveRouteBtn = document.getElementById('save-route-btn');
+        const routesListEl = document.getElementById('routes-list');
+        const logsListEl = document.getElementById('logs-list');
+        const logCountBadge = document.getElementById('log-count-badge');
+        const exportCsvBtn = document.getElementById('export-csv-btn');
+        const firebaseConfigTextarea = document.getElementById('firebase-config-textarea');
+        const connectCustomFirebaseBtn = document.getElementById('connect-custom-firebase-btn');
 
         // Helper: Show custom toast notification
         function showToast(msg) {
@@ -329,24 +452,188 @@
             }, 3000);
         }
 
-        // Unlock the Portal UI and Redirect to Google Sites
-        function unlockPortal(studentName) {
+        // Helper: SHA-256 Hash for Document IDs
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message.trim().toUpperCase());
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Initialize Cloud Connection & Real-Time Listeners
+        async function initCloudStorage(customConfig = null) {
+            const configToUse = customConfig || activeFirebaseConfig;
+
+            if (!configToUse || !configToUse.apiKey) {
+                isCloudConnected = false;
+                if (storageModeSubtitle) {
+                    storageModeSubtitle.textContent = "Session Mode • Connect Firebase in 'GitHub / Cloud Setup' for multi-device sync";
+                }
+                renderRoutesList();
+                renderLogsList();
+                return;
+            }
+
+            try {
+                const app = getApps().length === 0 ? initializeApp(configToUse) : getApps()[0];
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token && !customConfig) {
+                    const cred = await signInWithCustomToken(auth, __initial_auth_token);
+                    currentUser = cred.user;
+                } else {
+                    const cred = await signInAnonymously(auth);
+                    currentUser = cred.user;
+                }
+
+                if (!currentUser) return;
+                isCloudConnected = true;
+                if (storageModeSubtitle) {
+                    storageModeSubtitle.textContent = "Live Cloud Database Connected • Instant Multi-Device Sync";
+                }
+
+                // Listen to registered enrollment key routes
+                const routesCol = collection(db, 'artifacts', appId, 'public', 'data', 'enrollment_routes');
+                onSnapshot(routesCol, (snapshot) => {
+                    const cloudRoutes = [];
+                    snapshot.forEach((docSnap) => {
+                        cloudRoutes.push({ id: docSnap.id, ...docSnap.data() });
+                    });
+
+                    const hasDefault = cloudRoutes.some(r => r.keyCode === 'ARALMATHB2');
+                    registeredRoutes = hasDefault ? cloudRoutes : [...DEFAULT_FALLBACK_ROUTES, ...cloudRoutes];
+                    registeredRoutes.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                    renderRoutesList();
+                }, (err) => {
+                    console.error("Routes sync error:", err);
+                });
+
+                // Listen to student entry logs
+                const logsCol = collection(db, 'artifacts', appId, 'public', 'data', 'access_logs');
+                onSnapshot(logsCol, (snapshot) => {
+                    const items = [];
+                    snapshot.forEach((docSnap) => {
+                        items.push({ id: docSnap.id, ...docSnap.data() });
+                    });
+                    items.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                    accessLogs = items;
+                    renderLogsList();
+                }, (err) => {
+                    console.error("Logs sync error:", err);
+                });
+
+            } catch (err) {
+                console.error("Cloud initialization error:", err);
+                isCloudConnected = false;
+                if (storageModeSubtitle) {
+                    storageModeSubtitle.textContent = "Session Mode • Cloud connection unavailable";
+                }
+                renderRoutesList();
+            }
+        }
+
+        // Render Registered Keys & Associated Landing Sites
+        function renderRoutesList() {
+            if (!routesListEl) return;
+            if (registeredRoutes.length === 0) {
+                routesListEl.innerHTML = `<div class="p-4 text-center text-xs text-slate-400">No enrollment keys registered yet.</div>`;
+                return;
+            }
+
+            routesListEl.innerHTML = registeredRoutes.map(route => `
+                <div class="p-3 flex items-center justify-between gap-3 hover:bg-slate-50 transition-colors">
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 bg-indigo-100 text-indigo-800 font-mono font-bold text-xs rounded-md">${escapeHtml(route.keyCode)}</span>
+                            <span class="font-semibold text-slate-800 text-xs truncate">${escapeHtml(route.label || 'Course Portal')}</span>
+                        </div>
+                        <p class="text-[11px] font-mono text-slate-500 truncate mt-1">${escapeHtml(route.landingUrl)}</p>
+                    </div>
+                    <button type="button" data-delete-route="${escapeHtml(route.id)}" class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors shrink-0" title="Remove Key">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            `).join('');
+
+            renderIcons();
+
+            routesListEl.querySelectorAll('[data-delete-route]').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const routeId = btn.getAttribute('data-delete-route');
+                    if (routeId === 'default-aralmathb2') {
+                        showToast('Default key ARALMATHB2 can be overridden by adding a new route with the same key.');
+                        return;
+                    }
+                    if (isCloudConnected && db && currentUser) {
+                        try {
+                            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'enrollment_routes', routeId));
+                            showToast('Enrollment key removed from cloud.');
+                        } catch (err) {
+                            console.error('Delete route error:', err);
+                            showToast('Could not remove key.');
+                        }
+                    } else {
+                        registeredRoutes = registeredRoutes.filter(r => r.id !== routeId);
+                        renderRoutesList();
+                        showToast('Enrollment key removed.');
+                    }
+                });
+            });
+        }
+
+        // Render Student Entry Attendance Logs
+        function renderLogsList() {
+            if (logCountBadge) logCountBadge.textContent = accessLogs.length;
+            if (!logsListEl) return;
+
+            if (accessLogs.length === 0) {
+                logsListEl.innerHTML = `<div class="p-4 text-center text-xs text-slate-400">No student logins recorded yet.</div>`;
+                return;
+            }
+
+            logsListEl.innerHTML = accessLogs.map(log => {
+                const dateStr = log.timestamp ? new Date(log.timestamp).toLocaleString() : 'Just now';
+                return `
+                    <div class="p-3 flex items-center justify-between gap-2 text-xs">
+                        <div class="min-w-0">
+                            <p class="font-semibold text-slate-800 truncate">${escapeHtml(log.studentName || 'Enrolled Learner')}</p>
+                            <p class="text-[11px] text-slate-500">Key: <span class="font-mono font-semibold text-indigo-600">${escapeHtml(log.keyCode)}</span> • ${escapeHtml(log.courseLabel || '')}</p>
+                        </div>
+                        <span class="text-[11px] text-slate-400 shrink-0">${escapeHtml(dateStr)}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function escapeHtml(str) {
+            return String(str || '').replace(/[&<>"']/g, m => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[m]));
+        }
+
+        // Unlock the Portal UI and Redirect to the Matched Landing Site
+        function unlockPortal(studentName, matchedRoute) {
             const cleanName = studentName && studentName.trim() !== "" ? studentName.trim() : "Enrolled Learner";
+            const targetUrl = matchedRoute.landingUrl;
+            const courseLabel = matchedRoute.label || "Course Portal";
+
             displayStudentName.textContent = cleanName;
             if (heroStudentName) heroStudentName.textContent = cleanName;
-            if (launchSiteBtn) launchSiteBtn.href = TARGET_PORTAL_URL;
-            
-            // Save session so refreshing the page keeps them logged in
+            if (heroCourseLabel) heroCourseLabel.textContent = courseLabel;
+            if (heroDestinationUrl) heroDestinationUrl.textContent = targetUrl.replace(/^https?:\/\//, '');
+            if (launchSiteBtn) launchSiteBtn.href = targetUrl;
+
             sessionStorage.setItem('portal_unlocked', 'true');
             sessionStorage.setItem('portal_student_name', cleanName);
+            sessionStorage.setItem('portal_target_url', targetUrl);
+            sessionStorage.setItem('portal_course_label', courseLabel);
 
-            // Switch views
             errorBox.classList.add('hidden');
             gateView.classList.add('hidden');
             portalView.classList.remove('hidden');
             window.scrollTo(0, 0);
 
-            // Start 3-second countdown before redirecting to Google Sites
             let secondsLeft = 3;
             if (redirectCountdownEl) redirectCountdownEl.textContent = secondsLeft;
             clearInterval(redirectTimer);
@@ -355,7 +642,7 @@
                 if (redirectCountdownEl) redirectCountdownEl.textContent = Math.max(0, secondsLeft);
                 if (secondsLeft <= 0) {
                     clearInterval(redirectTimer);
-                    window.location.href = TARGET_PORTAL_URL;
+                    window.location.href = targetUrl;
                 }
             }, 1000);
         }
@@ -365,13 +652,15 @@
             clearInterval(redirectTimer);
             sessionStorage.removeItem('portal_unlocked');
             sessionStorage.removeItem('portal_student_name');
+            sessionStorage.removeItem('portal_target_url');
+            sessionStorage.removeItem('portal_course_label');
             keyInput.value = '';
             portalView.classList.add('hidden');
             gateView.classList.remove('hidden');
             showToast('Portal locked. Enrollment key required to re-enter.');
         }
 
-        // Verify key logic
+        // Verify Student Key Against Registered Routes & Log Attendance
         async function verifyAndEnter(rawKey, studentName) {
             try {
                 if (!rawKey || rawKey.trim() === '') {
@@ -380,16 +669,31 @@
                     return;
                 }
 
-                // Hash the input and compare (case-insensitive by converting to uppercase)
                 const normalizedInput = rawKey.trim().toUpperCase();
-                const hashedInput = await sha256(normalizedInput);
-                
-                // Direct match check for "ARALMATHB2" alongside SHA-256 verification
-                const isConfiguredKey = normalizedInput === 'ARALMATHB2';
+                const matchedRoute = registeredRoutes.find(r => r.keyCode.trim().toUpperCase() === normalizedInput);
 
-                if (VALID_KEY_HASHES.includes(hashedInput) || isConfiguredKey) {
-                    unlockPortal(studentName);
-                    showToast('Access granted! Redirecting to ARAL-Math...');
+                if (matchedRoute) {
+                    const logEntry = {
+                        studentName: studentName && studentName.trim() ? studentName.trim() : 'Anonymous Learner',
+                        keyCode: matchedRoute.keyCode,
+                        courseLabel: matchedRoute.label || '',
+                        timestamp: Date.now()
+                    };
+
+                    if (isCloudConnected && db && currentUser) {
+                        try {
+                            const logsCol = collection(db, 'artifacts', appId, 'public', 'data', 'access_logs');
+                            await addDoc(logsCol, logEntry);
+                        } catch (logErr) {
+                            console.warn('Could not write cloud attendance log:', logErr);
+                        }
+                    } else {
+                        accessLogs.unshift(logEntry);
+                        renderLogsList();
+                    }
+
+                    unlockPortal(studentName, matchedRoute);
+                    showToast(`Access granted! Redirecting to ${matchedRoute.label}...`);
                 } else {
                     errorMessage.textContent = 'Invalid enrollment key. Please double-check your spelling or ask your teacher.';
                     errorBox.classList.remove('hidden');
@@ -402,7 +706,7 @@
             }
         }
 
-        // Event Listeners
+        // Student Form Submit
         enrollmentForm.addEventListener('submit', (e) => {
             e.preventDefault();
             verifyAndEnter(keyInput.value, nameInput.value);
@@ -414,150 +718,154 @@
             keyInput.type = isPassword ? 'text' : 'password';
             eyeText.textContent = isPassword ? 'Hide' : 'Show';
             eyeIcon.setAttribute('data-lucide', isPassword ? 'eye-off' : 'eye');
-            lucide.createIcons();
+            renderIcons();
         });
 
-        // Teacher Key Generator Modal Listeners
-        openTeacherTool.addEventListener('click', () => teacherModal.classList.remove('hidden'));
+        // Teacher Modal Open / Close
+        openTeacherTool.addEventListener('click', () => {
+            teacherModal.classList.remove('hidden');
+            adminPasscodeInput.focus();
+        });
         closeTeacherTool.addEventListener('click', () => teacherModal.classList.add('hidden'));
         teacherModal.addEventListener('click', (e) => {
             if (e.target === teacherModal) teacherModal.classList.add('hidden');
         });
 
-        newTeacherKeyInput.addEventListener('input', async (e) => {
-            const val = e.target.value.trim().toUpperCase();
-            if (!val) {
-                generatedHashInput.value = '';
-                return;
+        // Unlock Instructor Console
+        function attemptAdminUnlock() {
+            const entered = adminPasscodeInput.value.trim();
+            if (entered.toUpperCase() === INSTRUCTOR_ADMIN_PASSCODE.toUpperCase()) {
+                adminLockError.classList.add('hidden');
+                adminLockScreen.classList.add('hidden');
+                adminConsoleBody.classList.remove('hidden');
+                renderRoutesList();
+                renderLogsList();
+            } else {
+                adminLockError.classList.remove('hidden');
             }
-            generatedHashInput.value = await sha256(val);
+        }
+        unlockAdminBtn.addEventListener('click', attemptAdminUnlock);
+        adminPasscodeInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                attemptAdminUnlock();
+            }
         });
 
-        copyHashBtn.addEventListener('click', () => {
-            if (!generatedHashInput.value) return;
-            generatedHashInput.select();
-            document.execCommand('copy');
-            showToast('SHA-256 hash copied to clipboard!');
-        });
-
-        // Helper: Build updated HTML source replacing the VALID_KEY_HASHES block
-        function buildUpdatedHtmlSource(sourceHtml, newHash) {
-            const replacementBlock = `/* KEYS_START */\n        const VALID_KEY_HASHES = [\n            "${newHash}"\n        ];\n        /* KEYS_END */`;
-            return sourceHtml.replace(/\/\* KEYS_START \*\/[\s\S]*?\/\* KEYS_END \*\//, replacementBlock);
+        // Console Tabs Switching
+        function switchTab(activeBtn, activePanel) {
+            [tabRoutesBtn, tabLogsBtn, tabCloudBtn].forEach(btn => {
+                btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors';
+            });
+            [tabRoutesPanel, tabLogsPanel, tabCloudPanel].forEach(panel => {
+                panel.classList.add('hidden');
+            });
+            activeBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-colors';
+            activePanel.classList.remove('hidden');
         }
 
-        // Download updated index.html file directly
-        downloadHtmlBtn.addEventListener('click', async () => {
-            const rawKey = newTeacherKeyInput.value.trim().toUpperCase();
-            if (!rawKey) {
-                showToast('Please enter a new enrollment key first.');
+        tabRoutesBtn.addEventListener('click', () => switchTab(tabRoutesBtn, tabRoutesPanel));
+        tabLogsBtn.addEventListener('click', () => switchTab(tabLogsBtn, tabLogsPanel));
+        tabCloudBtn.addEventListener('click', () => switchTab(tabCloudBtn, tabCloudPanel));
+
+        // Connect custom Firebase JSON for GitHub Pages
+        connectCustomFirebaseBtn.addEventListener('click', async () => {
+            try {
+                const parsed = JSON.parse(firebaseConfigTextarea.value.trim());
+                await initCloudStorage(parsed);
+                if (isCloudConnected) {
+                    showToast('Connected to Firebase cloud storage!');
+                    switchTab(tabRoutesBtn, tabRoutesPanel);
+                } else {
+                    showToast('Could not connect. Check your Firebase JSON config.');
+                }
+            } catch (e) {
+                showToast('Invalid JSON format. Paste the full Firebase config object.');
+            }
+        });
+
+        // Register New Key + Associated Landing Site
+        registerRouteForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const label = routeLabelInput.value.trim();
+            const keyCode = routeKeyInput.value.trim().toUpperCase();
+            const landingUrl = routeUrlInput.value.trim();
+
+            if (!label || !keyCode || !landingUrl) return;
+
+            try {
+                saveRouteBtn.disabled = true;
+                const keyDocId = await sha256(keyCode);
+
+                if (isCloudConnected && db && currentUser) {
+                    const routeDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'enrollment_routes', keyDocId);
+                    await setDoc(routeDocRef, {
+                        keyCode,
+                        label,
+                        landingUrl,
+                        createdAt: Date.now()
+                    });
+                    showToast(`Synced to cloud: "${keyCode}" → ${label}`);
+                } else {
+                    registeredRoutes = registeredRoutes.filter(r => r.keyCode !== keyCode);
+                    registeredRoutes.unshift({
+                        id: keyDocId,
+                        keyCode,
+                        label,
+                        landingUrl,
+                        createdAt: Date.now()
+                    });
+                    renderRoutesList();
+                    showToast(`Registered "${keyCode}" → ${label}`);
+                }
+
+                routeLabelInput.value = '';
+                routeKeyInput.value = '';
+                routeUrlInput.value = '';
+            } catch (err) {
+                console.error('Error registering route:', err);
+                showToast('Failed to register key. Check permissions.');
+            } finally {
+                saveRouteBtn.disabled = false;
+            }
+        });
+
+        // Export Student Attendance Logs to CSV
+        exportCsvBtn.addEventListener('click', () => {
+            if (accessLogs.length === 0) {
+                showToast('No attendance logs to export yet.');
                 return;
             }
-            const newHash = await sha256(rawKey);
-            const currentDocHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-            const updatedHtml = buildUpdatedHtmlSource(currentDocHtml, newHash);
-
-            const blob = new Blob([updatedHtml], { type: 'text/html' });
+            const headers = ['Student Name', 'Enrollment Key', 'Course Label', 'Timestamp'];
+            const rows = accessLogs.map(l => [
+                `"${(l.studentName || '').replace(/"/g, '""')}"`,
+                `"${(l.keyCode || '').replace(/"/g, '""')}"`,
+                `"${(l.courseLabel || '').replace(/"/g, '""')}"`,
+                `"${l.timestamp ? new Date(l.timestamp).toLocaleString() : ''}"`
+            ]);
+            const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'index.html';
+            a.download = `student-access-logs-${new Date().toISOString().slice(0, 10)}.csv`;
             a.click();
             URL.revokeObjectURL(url);
-            showToast(`Downloaded index.html with key "${rawKey}" registered!`);
-        });
-
-        // Automatically push updated index.html to GitHub via GitHub REST API
-        pushGithubBtn.addEventListener('click', async () => {
-            const rawKey = newTeacherKeyInput.value.trim().toUpperCase();
-            const repo = ghRepoInput.value.trim();
-            const branch = ghBranchInput.value.trim() || 'main';
-            const token = ghTokenInput.value.trim();
-
-            if (!rawKey || !repo || !token) {
-                ghStatus.textContent = 'Please fill in the New Enrollment Key, Owner/Repo, and GitHub Token.';
-                ghStatus.className = 'p-2.5 rounded-xl text-xs bg-rose-50 text-rose-700 border border-rose-200 block';
-                return;
-            }
-
-            try {
-                pushGithubBtn.disabled = true;
-                ghStatus.textContent = 'Connecting to GitHub and updating index.html...';
-                ghStatus.className = 'p-2.5 rounded-xl text-xs bg-indigo-50 text-indigo-700 border border-indigo-200 block';
-
-                const newHash = await sha256(rawKey);
-                const apiUrl = `https://api.github.com/repos/${repo}/contents/index.html`;
-
-                // 1. Fetch existing index.html from GitHub to get its SHA and current content
-                const getRes = await fetch(`${apiUrl}?ref=${encodeURIComponent(branch)}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/vnd.github+json'
-                    }
-                });
-
-                if (!getRes.ok) {
-                    throw new Error(`Could not fetch index.html (${getRes.status}). Check repo name, branch, and token.`);
-                }
-
-                const fileData = await getRes.json();
-                // Decode UTF-8 base64 content safely
-                const binaryStr = atob(fileData.content.replace(/\n/g, ''));
-                const bytes = Uint8Array.from(binaryStr, c => c.charCodeAt(0));
-                const existingHtml = new TextDecoder().decode(bytes);
-
-                // 2. Replace the key hash inside index.html
-                const updatedHtml = buildUpdatedHtmlSource(existingHtml, newHash);
-
-                // Encode UTF-8 string back to base64
-                const updatedBytes = new TextEncoder().encode(updatedHtml);
-                let updatedBinary = '';
-                updatedBytes.forEach(b => updatedBinary += String.fromCharCode(b));
-                const encodedContent = btoa(updatedBinary);
-
-                // 3. Commit updated index.html back to GitHub
-                const putRes = await fetch(apiUrl, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/vnd.github+json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: 'Update student enrollment key via Teacher Portal',
-                        content: encodedContent,
-                        sha: fileData.sha,
-                        branch: branch
-                    })
-                });
-
-                if (!putRes.ok) {
-                    throw new Error(`Failed to commit update (${putRes.status}). Ensure token has Contents read/write permission.`);
-                }
-
-                // Also update active in-memory key immediately
-                VALID_KEY_HASHES.length = 0;
-                VALID_KEY_HASHES.push(newHash);
-
-                ghStatus.textContent = `Success! Key "${rawKey}" is now registered in ${repo}/index.html. GitHub Pages will reflect it in ~60 seconds.`;
-                ghStatus.className = 'p-2.5 rounded-xl text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 block';
-                showToast('GitHub index.html updated automatically!');
-            } catch (err) {
-                ghStatus.textContent = err.message;
-                ghStatus.className = 'p-2.5 rounded-xl text-xs bg-rose-50 text-rose-700 border border-rose-200 block';
-            } finally {
-                pushGithubBtn.disabled = false;
-            }
+            showToast('Attendance CSV downloaded!');
         });
 
         // Lock button
         lockPortalBtn.addEventListener('click', lockPortal);
 
-        // On Page Load: Only unlock if there is an active verified session
-        window.addEventListener('DOMContentLoaded', () => {
+        // Initialize on Page Load
+        window.addEventListener('DOMContentLoaded', async () => {
+            renderIcons();
+            await initCloudStorage();
             if (sessionStorage.getItem('portal_unlocked') === 'true') {
                 const savedName = sessionStorage.getItem('portal_student_name');
-                unlockPortal(savedName);
+                const savedUrl = sessionStorage.getItem('portal_target_url') || DEFAULT_FALLBACK_ROUTES[0].landingUrl;
+                const savedLabel = sessionStorage.getItem('portal_course_label') || DEFAULT_FALLBACK_ROUTES[0].label;
+                unlockPortal(savedName, { landingUrl: savedUrl, label: savedLabel });
             }
         });
     </script>
