@@ -627,11 +627,6 @@
             if (heroDestinationUrl) heroDestinationUrl.textContent = targetUrl.replace(/^https?:\/\//, '');
             if (launchSiteBtn) launchSiteBtn.href = targetUrl;
 
-            sessionStorage.setItem('portal_unlocked', 'true');
-            sessionStorage.setItem('portal_student_name', cleanName);
-            sessionStorage.setItem('portal_target_url', targetUrl);
-            sessionStorage.setItem('portal_course_label', courseLabel);
-
             errorBox.classList.add('hidden');
             gateView.classList.add('hidden');
             portalView.classList.remove('hidden');
@@ -657,10 +652,6 @@
         // Lock the Portal UI
         function lockPortal() {
             clearInterval(redirectTimer);
-            sessionStorage.removeItem('portal_unlocked');
-            sessionStorage.removeItem('portal_student_name');
-            sessionStorage.removeItem('portal_target_url');
-            sessionStorage.removeItem('portal_course_label');
             keyInput.value = '';
             portalView.classList.add('hidden');
             gateView.classList.remove('hidden');
@@ -869,12 +860,6 @@
             window.scrollTo(0, 0);
             renderIcons();
             await initCloudStorage();
-            if (sessionStorage.getItem('portal_unlocked') === 'true') {
-                const savedName = sessionStorage.getItem('portal_student_name');
-                const savedUrl = sessionStorage.getItem('portal_target_url') || DEFAULT_FALLBACK_ROUTES[0].landingUrl;
-                const savedLabel = sessionStorage.getItem('portal_course_label') || DEFAULT_FALLBACK_ROUTES[0].label;
-                unlockPortal(savedName, { landingUrl: savedUrl, label: savedLabel });
-            }
         });
     </script>
 </body>
